@@ -2,70 +2,6 @@
 
 ---
 
-- [Fog And Cloud](#fog-and-cloud)
-  - [Introduction](#introduction)
-    - [Problems of a large scale distributed system](#problems-of-a-large-scale-distributed-system)
-    - [From Innovation to Service](#from-innovation-to-service)
-    - [Requirements](#requirements)
-    - [Definition](#definition)
-    - [Key cloud concepts](#key-cloud-concepts)
-    - [Fog Computing](#fog-computing)
-  - [Cloud Ecosystem](#cloud-ecosystem)
-    - [The NIST reference model](#the-nist-reference-model)
-    - [Virtualization](#virtualization)
-    - [Elasticity](#elasticity)
-    - [Deployment Models](#deployment-models)
-      - [Public Cloud](#public-cloud)
-      - [Private Cloud](#private-cloud)
-      - [Community Cloud](#community-cloud)
-      - [Hybrid Cloud](#hybrid-cloud)
-    - [Delivery Models](#delivery-models)
-      - [Software as a Service (SaaS)](#software-as-a-service-saas)
-      - [Platform as a Service (PaaS)](#platform-as-a-service-paas)
-      - [Infrastructure as a Service (IaaS)](#infrastructure-as-a-service-iaas)
-      - [Other Models](#other-models)
-      - [Responsibility](#responsibility)
-    - [The Cloud Ecosystem](#the-cloud-ecosystem)
-      - [AWS example](#aws-example)
-  - [Cloud Virtualization](#cloud-virtualization)
-    - [Advantages](#advantages)
-    - [Limitations](#limitations)
-    - [Usage Scenarios](#usage-scenarios)
-    - [Common Off The Shelf (COTS) Hardware](#common-off-the-shelf-cots-hardware)
-    - [Layering](#layering)
-      - [Interfaces](#interfaces)
-    - [VM, Host OS, Guest OS](#vm-host-os-guest-os)
-    - [Hypervisor (or Virtual Machine Monitor VMM)](#hypervisor-or-virtual-machine-monitor-vmm)
-    - [CPU Virtualization](#cpu-virtualization)
-      - [Hardware Privileges](#hardware-privileges)
-      - [Types of Virtualization (x86)](#types-of-virtualization-x86)
-        - [Full Virtualisation (Dynamic Binary Translation)](#full-virtualisation-dynamic-binary-translation)
-        - [Paravirtualisation](#paravirtualisation)
-        - [Hardware Assisted Virtualisation](#hardware-assisted-virtualisation)
-    - [Memory Virtualization](#memory-virtualization)
-    - [I/O Virtualization](#io-virtualization)
-      - [Device Emulation](#device-emulation)
-      - [Para-virtualized Device](#para-virtualized-device)
-      - [Direct Assignment](#direct-assignment)
-      - [IOMMU (Input/Output Memory Management Unit)](#iommu-inputoutput-memory-management-unit)
-    - [Hypervisor Architectures](#hypervisor-architectures)
-      - [Type 1](#type-1)
-      - [Type 2](#type-2)
-      - [Hybrid Approach](#hybrid-approach)
-    - [OS Level Virtualization](#os-level-virtualization)
-      - [PROS and CONS of Full Virtualization](#pros-and-cons-of-full-virtualization)
-      - [Lightweight Virtualization](#lightweight-virtualization)
-      - [cgroups and namespaces](#cgroups-and-namespaces)
-      - [Linux Containers (LXC)](#linux-containers-lxc)
-      - [Docker](#docker)
-  - [Cloud Networking](#cloud-networking)
-    - [Data Center Networks](#data-center-networks)
-      - [Concepts](#concepts)
-      - [Topology of a Datacenter (Folded Clos topology _or_ Fat Trees)](#topology-of-a-datacenter-folded-clos-topology-or-fat-trees)
-      - [Unsolved Problems](#unsolved-problems)
-    - [Networking in virtualized environments](#networking-in-virtualized-environments)
-      - [Software Bridges in Linux](#software-bridges-in-linux)
-
 ---
 
 ## Introduction
@@ -675,4 +611,69 @@ There are although 3 solutions:
 
 Today **Smart NIC** are introduced, and they have a processor just for switching so that CPU is used fr actual processing.
 
-#### Software Bridges in Linux
+### Software Bridges in Linux
+
+Linux allows to create bridge across the interfaces and exposing one unique virtual interface valid for the entire host.
+(promiscuous mode)
+
+Three main types of software switches:
+
+- **Linuxbridge**
+- **macvlan** (if you just have to provide connection to the external network)
+  - VLAN like
+  - each VM has its own macvlan interface with a unique MAC address.
+  - 4 modes
+    - _Private_: no direct connection between VMs, through the router
+    - _Virtual Ethernet Port Aggregator_, through the L2 switch
+    - _Bridge_: allow direct connection between VMs
+    - _Pass-through_: MAC filtering not in use, through vNIC
+- **Open vSwitch**
+  - software implementation of a virtual multilayer network switch
+
+### Complexity on a Single Server
+
+**Problems:**
+
+1. Who provides IPs?
+   1. Use **direct routing**: bridged or routed. They are the same addresses of the physical network.
+   2. Use **private addresses** and connect to Internet through **NAT**
+2. May require more network services
+   1. ![What To Provide](images/WhatToProvide.png)
+   2. _vNAT, vRouter, vSwitch, vDHCP_
+3. Network isolation
+   1. Usually achieved by using multiple vSwitches and vRouters inside the same physical server.
+4. Tenants custom policies
+   1. An Application Level firewall (L7) is used.
+5. Server's TCP/IP need to coexist
+   1. Necessity to distinguish inbound traffic towards VMs from the one directed to Linux.
+   2. ![Kernel Network Stack](images/KernelNetworkStack.png)
+
+### Datacenters-wide Networking
+
+Problems are the same.
+
+#### L3 connecctivity
+
+To provide L2 access to tenants, **tunnels** are used (GRE protocol). They want their VMs like connected by a switch, even if in different racks.
+
+![Tunnel](images/Tunnel.png)
+
+vLAN could be used but they are more complex to manage and less scalable.
+
+#### L3 connectivity
+
+**Kubernetes are used**: **tunnelling** and **direct routing**
+
+![L3 Tunnel](images/L3Tunnel.png)
+
+![L3 Direct Routing](images/L3DirectRouting.png)
+
+#### Conclusions
+
+- When the packet is in the _VM_ you only know the **IP routing table / ARP table of the VM**.
+- When the frame is on the _bridge_ you only know the **filtering database**.
+- When the packet is in the _Linux Forwarding module_ you only know the **IP routing table / ARP table of the host**
+
+Other options are for example the **VxLAN technology** (full mesh solution, UDP encapsulation)
+
+Preferable solution is using the **overlay model** (create a virtual topology rather than a physical topology)
