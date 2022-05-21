@@ -1,6 +1,56 @@
-# Calcolatori
+# Calcolatori (Assembly)
 
-# Assembly
+---
+
+- [Calcolatori (Assembly)](#calcolatori-assembly)
+  - [Cos'è?](#cosè)
+  - [ISA](#isa)
+  - [Procedimento](#procedimento)
+  - [Registri](#registri)
+  - [Istruzioni](#istruzioni)
+  - [RISC vs CISC](#risc-vs-cisc)
+  - [Istruzioni condizionate](#istruzioni-condizionate)
+  - [RISC sample](#risc-sample)
+  - [Accesso alla memoria](#accesso-alla-memoria)
+  - [ISA vs ABI](#isa-vs-abi)
+- [RISC-V](#risc-v)
+  - [Cenni storici](#cenni-storici)
+  - [Operazioni Aritmetiche](#operazioni-aritmetiche)
+  - [I registri](#i-registri)
+  - [Accesso alla memoria](#accesso-alla-memoria-1)
+  - [Operandi immediati](#operandi-immediati)
+  - [Costante 0](#costante-0)
+  - [Codifica esadecimale](#codifica-esadecimale)
+  - [Codifica in codice macchina](#codifica-in-codice-macchina)
+  - [Istruzioni di tipo I](#istruzioni-di-tipo-i)
+  - [Key Letters Istruzioni](#key-letters-istruzioni)
+  - [Operazioni Logiche](#operazioni-logiche)
+    - [Shift Logico](#shift-logico)
+    - [AND `and`](#and-and)
+    - [OR `or`](#or-or)
+    - [OR esclusivo `xor`](#or-esclusivo-xor)
+    - [NOT](#not)
+  - [Istruzioni per prendere decisioni](#istruzioni-per-prendere-decisioni)
+    - [Il costrutto case/switch](#il-costrutto-caseswitch)
+  - [Procedure](#procedure)
+    - [Stack](#stack)
+    - [Storage class](#storage-class)
+    - [Record di Attivazione](#record-di-attivazione)
+- [Assembly INTEL](#assembly-intel)
+  - [I registri](#i-registri-1)
+  - [Convenzioni di Chiamata (Non dell'architettura)](#convenzioni-di-chiamata-non-dellarchitettura)
+  - [Indirizzamento](#indirizzamento)
+  - [Key letters/word](#key-lettersword)
+  - [Istruzioni](#istruzioni-1)
+- [Assembly ARM](#assembly-arm)
+  - [Registri](#registri-1)
+    - [Flag Register](#flag-register)
+  - [Key letters/word](#key-lettersword-1)
+  - [Convenzioni di chiamata](#convenzioni-di-chiamata)
+  - [Indirizzamento](#indirizzamento-1)
+  - [Operazioni Aritmetiche e Logiche](#operazioni-aritmetiche-e-logiche)
+
+---
 
 ## Cos'è?
 
