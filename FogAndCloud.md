@@ -1,6 +1,7 @@
 # Fog And Cloud
 
 ---
+
 - [Fog And Cloud](#fog-and-cloud)
   - [Introduction](#introduction)
     - [Problems of a large scale distributed system](#problems-of-a-large-scale-distributed-system)
@@ -69,6 +70,7 @@
       - [L3 connecctivity](#l3-connecctivity)
       - [L3 connectivity](#l3-connectivity)
       - [Conclusions](#conclusions)
+
 ---
 
 ## Introduction
@@ -744,3 +746,258 @@ vLAN could be used but they are more complex to manage and less scalable.
 Other options are for example the **VxLAN technology** (full mesh solution, UDP encapsulation)
 
 Preferable solution is using the **overlay model** (create a virtual topology rather than a physical topology)
+
+## Cloud Storage
+
+### Storage in the cloud
+
+Storage system design philosophy shifted from performance/any-cost to **reliability/lowest-possible-cost**.
+**Data replication** allows access from multiple system concurrently.
+**Consistency** affect the data management software complexity.
+Today is important **data streaming** and **content delivery**.
+
+### Type of Storage
+
+**Storage model**: data structure in physical layout
+**Data model**: logical aspects in a database
+
+**Properties**:
+
+- Read/Write coherence: read same data of last write
+- Before-or-after atomicity: each r/w is atomic
+
+**Types of storage**:
+
+- **Block**: data is organized in blocks within sectors and tracks (raw)
+  - es. DBMS
+- **File**: manages data in structured files
+  - controlled by the _file system_
+  - es. Distributed File System (NFS)
+- **Object**: manages data in structured objects
+  - _metadata_ are stored too
+  - simple access through \_API
+  - es. backups, archives
+
+### Block storage (OpenStack Cinder)
+
+It provides services and libraries to access block storage resources.
+Composed by: API, scheduler, backup and volumes.
+
+### Distributed File Systems
+
+- **File** linear array of cells stored on a persistent storage device.
+- **File pointer** a cell used as a starting point for read and write operation
+- **Organization**
+  - _Logical_ = data model
+  - _Physical_ = storage model
+- **File system** collection of directories, with information about files
+  - _Traditional_ = Unix
+  - _Distributed File System_ = NFS
+
+#### Unix
+
+- Layered design -> flexibility
+- Hierarchical -> scalability
+- Metadata (_inodes_) -> independence
+
+#### Network File System
+
+Built to use the same semantic as the Unix file system, with easy integration and modest performance degradation. It is client-server based.
+
+> client -> RemoteProceduresCall -> vnode -> server
+
+API = like bash on unix (read, write, chmod, mount, ...)
+
+**Others**: Andrew File System, Sprite Network System.
+
+#### Design choices
+
+- once file is closed server has thee newest version.
+- Policy to write
+  - _write-backs_: instant write to cache, disk delayed
+  - _write-through_: instant write to disk
+- Concurrency
+  - _Sequential_: one at a time
+  - _Concurrent_: more at a time
+
+### General Parallel File System (GPFS)
+
+Created by IBM, optimal performance in clusters, a file is a block of _equal sizes_ across several disks. Its interconnection is SAN. All operations are written in a **log file** before the actual write to disk so easy recovery from system failures. It allows concurrent access. For security reasons data and metadata are **replicated** on more disks.
+
+### Google File System (GFS)
+
+Create by Google with scalability and reliability in mind. Files are in GB/TB order and the most common operation is to append to an existing file. A file is segmented in **large chunks** (64MB, 64KB/block, 32-bit checksum) to eliminate client-side caching and to have less overhead if you access the same chunk. Append operation is atomic and there is automatic garbage collection. There is a **Master** which contain metadata about all the chunks.
+
+_Steps to write_:
+
+1. Client ask to master which replies with ID of primary and secondary chunk servers holding replicas
+2. Client sends data to all chunk servers
+3. When it receives ACK it sends a write request to primary chunk server
+4. Primary chunk server write to all secondary chunk servers
+5. Each secondary sends ACK to primary
+6. After receiving ACK from all secondary, primary sends ACK to client
+
+### Locks and Consensus
+
+OS use lock managers to organize and serialize access to resources. There is a necessity for a **leader**.
+
+- Effect
+  - Advisory - all processes should follow the rules
+  - Mandatory - blocked
+- Time
+  - Fine-grained - lock for short time
+  - Coarse-grained - lock for longer time
+
+There are 2 approaches: leave to the client the responsibility or create a locking service using the **Paxos asynchronous algorithm**.
+
+#### Chubby (by Google)
+
+- loosely-coupled distributed system
+- large number of machines
+- coarse-grained
+- reliable low-volume storage
+- advisory locks
+
+A chubby **cell** is a set of typically 5 servers (_replicas_) which elect a master. It does read and write and in case of failure a new master is elected. RPC is used to comunicate. So the master write to all replicas data and than waits the majority of servers to ack.
+
+Chubby is simpler than Unix: _nodes_ are separated by `/` (es. `ls/cell1/path`). Metadata and Handles are present ad stored in a well-known location.
+
+Lock is acquired in exclusive (writing) or shared (reading) mode. {sequencer = string with state, lock-delay = time to wait}
+
+### Distributed Databases
+
+#### Big Table (Google)
+
+It is a **distributed storage system** for managing structured data. It is designed to scale: sparse, distributed, persistent multi-dimensional sorted map (key/value store).
+
+It is based on the **Google File System** formatted as **Google Sorted String Table** file. A Google Chubby System acts as an entry point.Chubby points to the **root tablet server** which is a start of a B+tree containing **metadata tablet**. With the help of metadata tablet i locate the **data tablet** where data is stored in block. A commit log is maintained with all the operations.
+
+![Big Table Structure](images/BigTableStructure.png)
+
+- **Google File System**
+  - METADATA tablets (tablets locations)
+  - DATA tablets = SSTable files (64KB blocks, index at last position)
+  - LOG tablets
+- **Google Chubby**
+  - ensure one master is active
+  - discover tablets servers and finalize deaths
+  - store schema information
+  - _if Chubby is unavailable, Big Table is unavailable._
+- **Master server**
+  - assignment to servers
+  - balancing
+  - garbage collector
+  - handling schema changes
+- **Tablet server**
+  - manages a set of tablets
+  - split if too large
+- **Client**
+  - read/write
+
+The master asks periodically to the tablet server to check if it is alive. If it is not alive, it is removed from the list of tablet servers. The master can kill itself in case of malfunction.
+
+##### Splitting and Merging
+
+- **Minor compaction (+SST2)**: almost full memtable become an SSTable and a new memtable is created
+- **Merging compaction (SST2+SST3=SST4)**: two SSTable are merged into one
+- **Major compaction (all SST=SST1)**: all SSTables are merged into one optimizing log (no deletion history)
+
+## Resource Allocation
+
+- save money
+- improve productivity
+- saving time
+- effective use of resources
+
+> Minimize (or maximize) an **objective function**
+
+Resource Distribution Problem: es. online caching problem
+
+### P vs NP problem
+
+- P: **polynomial**, easy to solve.
+- NP: **non-polynomial**, easy to check, hard to solve.
+
+If P=NP then: easy to check , easy to solve.
+
+Some of the NP problems can become P problems.
+
+### Approximation
+
+| Approximation algorithms | Heuristic          |
+| :----------------------- | :----------------- |
+| Approximation guarantee  | No approximation   |
+| Approximation proof      | Experimental proof |
+| General case             | Specific case      |
+| Efficient                |                    |
+
+**Heuristic**:
+
+- First-fit
+- Best-fit
+- Worst-fit
+- Next-fit
+
+### Resource Allocation in Cloud
+
+> **Problem:** Assign VMs with volatile demands to physical servers such that energy costs are minimized.
+> Minimizing energy costs means minimizing the total number of the servers.
+
+- **Static allocation**
+  - Optimization ➡️ Mathematical programming
+  - Approximation ➡️ Round-robin
+  -
+- **Dynamic allocation**
+  - Optimal Control Technique
+  - Service Live Migration ➡️ move VMs to other servers (better with container)
+    - _proactive control_ "predicts" and do the best thing
+
+You should use a combination of the 2: static for long term, dynamic for peaks.
+
+### Resource Allocation in the Fog
+
+Cloud is far, expensive, subject to privacy end network issue.
+Fog, with his distribution of resources can help, especially for IoT applications (_microservice architecture_).
+There are 2 approaches, like for the cloud:
+
+- **Static**
+- **Dynamic**
+
+In Fog Computing live migration:
+
+- deal with geographical distribution
+- save money
+- better use of resources
+- guarantee Quality Of Service
+
+New is the concept of **Federated Fog Computing**.
+
+### Wrap Up
+
+- old problem
+- theoretical foundations
+- fundamental in distributed systems
+- different based on the context
+- new algorithms
+
+## Cloud Automation
+
+1. VMs are made to stay up for a long time, multiple tasks
+2. Container less time, single task
+3. **Function As A Service**, micro-vm
+
+### FaaS
+
+They are invoked by a client, and it execute a function. There is a short time of cache.
+
+### Infrastructure as a Code
+
+You can describe your stack in a configuration file to make it portable.
+
+### Costs
+
+**FinOps**: cost of the infrastructure, keep track and optimize.
+
+---
+
+Samuele Mazzei
