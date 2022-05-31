@@ -123,7 +123,7 @@ store <memory location>, <store>
 3. Indirizzo ottenuto shiftando un valore in un registro
 4. Combinazione
 
-5. :x: Assoluto: codificato in una istruzione Assembly
+5. ❌ Assoluto: codificato in una istruzione Assembly
 6. Indiretto: per i puntatori
 7. Base + Spiazzamento (reg + valore immediato)
 8. Base + Indice (reg + reg[shiftato])

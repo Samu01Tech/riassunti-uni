@@ -8,12 +8,9 @@
   });
 </script>
 
-## Sistemi Operativi
+# Sistemi Operativi
 
----
-
-**Indice**
-
+- [Sistemi Operativi](#sistemi-operativi)
 - [Storia](#storia)
 - [Struttura Hardware](#struttura-hardware)
   - [CPU](#cpu)
@@ -99,6 +96,25 @@
     - [Paginazione su richiesta](#paginazione-su-richiesta)
     - [Sostituzione delle pagine](#sostituzione-delle-pagine)
     - [Allocazione dei frame ai processi](#allocazione-dei-frame-ai-processi)
+- [File System e Memorie di Massa](#file-system-e-memorie-di-massa)
+  - [Interfaccia del File System](#interfaccia-del-file-system)
+    - [File](#file)
+    - [Directory](#directory)
+  - [Realizzazione](#realizzazione)
+    - [Strutture dati](#strutture-dati)
+      - [Disco](#disco)
+      - [Memoria](#memoria)
+    - [Allocazione dello spazio su disco](#allocazione-dello-spazio-su-disco)
+      - [Allocazione contigua](#allocazione-contigua)
+      - [Allocazione a lista](#allocazione-a-lista)
+      - [File Allocation Table](#file-allocation-table)
+      - [Allocazione indicizzata](#allocazione-indicizzata)
+      - [_inode_ in UNIX](#inode-in-unix)
+    - [Realizzazione delle directory](#realizzazione-delle-directory)
+    - [Gestione dello spazio](#gestione-dello-spazio)
+  - [Efficienza e Prestazioni](#efficienza-e-prestazioni)
+    - [La cache del disco](#la-cache-del-disco)
+    - [Scheduling nel disco](#scheduling-nel-disco)
 
 ---
 
@@ -121,7 +137,7 @@ Organizza la condivisione di risorse. Il processore sa quando è in modalità ut
   - Aumento affidabilità e velocità
   - L'SO interpreta comandi
 
-**batch pipeline**
+**batch pipeline**:
 
 1. Dati conservati su schede
 2. Vengono letti da una macchina che li trasferisce su un nastro
@@ -208,7 +224,7 @@ I trasferimenti sono quindi alternati ai normali cicli di lettura/scrittura dell
 Un **processo** è un programma in esecuzione.
 Per svolgere il proprio compito deve accedere alle risorse. UN processo viene eseguito in modo sequenziale e compete con altri processi per le risorse. Il processo è figlio di un altro processo che l'ha avviato.
 
-**Responsabilità del SO**
+**Responsabilità del SO**:
 
 - Gestione ciclo di vita
 - Scheduling
@@ -221,7 +237,7 @@ La memoria principale è veloce ma volatile, costosa e limitata.
 Per essere eseguiti i processi devono essere caricati qui.
 Di base semplice spazio "vuoto", la MMU permette strutture dati.
 
-**Responsabilità del SO**
+**Responsabilità del SO**:
 
 - Allocazione e rilascio di memoria
 - Spostamenti su disco
@@ -232,7 +248,7 @@ Di base semplice spazio "vuoto", la MMU permette strutture dati.
 La memoria secondaria è più lenta ma non costosa e permanente.
 Ha una struttura più complessa e una gestione più complessa.
 
-**Responsabilità del SO**
+**Responsabilità del SO**:
 
 - Allocazione spazio libero
 - Gestione accessi
@@ -245,7 +261,7 @@ I dispositivi I/O sono numerosi ed eterogenei.
 - A flusso continuo (tastiera, mouse)
 - A pacchetti (scheda di rete, disco)
 
-**Responsabilità del SO**
+**Responsabilità del SO**:
 
 - Astrazione tramite driver
 - Interfacce ad alto livello
@@ -257,7 +273,7 @@ La memoria di massa può avere strutture complesse.
 Un file è una raccolta di informazioni correlate fra loro.
 Sono organizzati in **directory**.
 
-**Responsabilità del SO**
+**Responsabilità del SO**:
 
 - Gestione
 - Reperimento
@@ -267,7 +283,7 @@ Sono organizzati in **directory**.
 
 Deve gestire l'accesso ai dati.
 
-**Responsabilità del SO**
+**Responsabilità del SO**:
 
 - Gestire le autorizzazioni
 
@@ -275,7 +291,7 @@ Deve gestire l'accesso ai dati.
 
 Serie di elementi di calcolo che condividono dati tramite una rete.
 
-**Responsabilità del SO**
+**Responsabilità del SO**:
 
 - Sincronizzazione fra i vari componenti
 
@@ -312,7 +328,7 @@ Vengono ora usati linguaggi ad alto livello perché più semplice e manutenibile
 
 ### Strutture a strati
 
-_immagine livelli_
+![livelli di accesso](images/Livelli.png)
 
 **Principio del minimo privilegiato**: Ogni componente dovrebbe avere il minimo livello di privilegio necessario per eseguire le operazioni che gli richiedono.
 
@@ -402,7 +418,7 @@ Le code non sono rigide, La selezione dei processi da eseguire p operata dallo *
 
 Ad esclusione di `init` un processo nasce da un altro processo genitore.
 
-**Tre primitive**
+**Tre primitive**:
 
 - `fork`: duplica il processo e lo mette in waiting
 - `exec`: sostituisce al figlio un nuovo processo
@@ -461,7 +477,7 @@ Basato su:
 - ID dei processi (comunicazione diretta)
 - ID del canale (comunicazione indiretta) es. mailbox
 
-**Sincronizzazione**
+**Sincronizzazione**:
 
 - sincrona - un messaggio alla volta
 - asincrona - con un buffer
@@ -469,9 +485,9 @@ Basato su:
 **Buffering**
 Necessario in caso asincrono; anche il ricevente deve aver un buffer in entrata, e va comunicata la dimensione.
 
-**Dimensione dei messaggi**
+**Dimensione dei messaggi**:
 
-**Direzionalità**
+**Direzionalità**:
 
 - bidirezionale
 - unidirezionale
@@ -529,8 +545,8 @@ Il primo processo che arriva viene eseguito, gli altri vengono messi in coda.
 
 **Com'è?**
 
-- :heavy_check_mark: Semplice
-- :x: Un processo lungo ritarda tutti gli altri
+- ✅ Semplice
+- ❌ Un processo lungo ritarda tutti gli altri
 
 ### Shortest Job First (SJF)
 
@@ -539,9 +555,9 @@ Il primo processo che arriva viene eseguito, gli altri vengono messi in coda.
 
 **Com'è?**
 
-- :heavy_check_mark: Ottimo per tempi di risposta e completamento
-- :heavy_check_mark: SRTF rapido
-- :x: Conoscere il tempo di CPU Burst è difficile
+- ✅ Ottimo per tempi di risposta e completamento
+- ✅ SRTF rapido
+- ❌ Conoscere il tempo di CPU Burst è difficile
   - Possibile TempoLimite
   - A breve termine si stima i CPU burst precedenti dello stesso processo
 
@@ -555,9 +571,9 @@ La priorità può avere una parte **statica** e una parte **dinamica**
 
 **Com'è?**
 
-- :heavy_check_mark: Ottimo per emergenze
-- :heavy_check_mark: differenzia i processi kernel e i processi utente
-- :x: **starvation** - un processo potrebbe non essere mai eseguito se a molto bassa priorità
+- ✅ Ottimo per emergenze
+- ✅ differenzia i processi kernel e i processi utente
+- ❌ **starvation** - un processo potrebbe non essere mai eseguito se a molto bassa priorità
   - Possibile aumentare la priorità col tempo
   - Oppure la priorità può rappresentare una probabilità
 
@@ -565,7 +581,7 @@ La priorità può avere una parte **statica** e una parte **dinamica**
 
 $$R = 1 + \frac{T_{waiting}}{T_{burst}}$$
 
-_Ricalcolando a ogni decisione dello scheduler_
+(_Ricalcolando a ogni decisione dello scheduler_)
 
 ### Round Robin
 
@@ -574,9 +590,9 @@ Con `n` processi ognuno ottiene $\frac{1}{n}$ del tempo di CPU.
 
 **Com'è?**
 
-- :heavy_check_mark: Equo
-- :heavy_check_mark: Bassi tempi di risposta $max \Rightarrow (n-1)q$
-- :x: Tempi mediamente più elevati
+- ✅ Equo
+- ✅ Bassi tempi di risposta $max \Rightarrow (n-1)q$
+- ❌ Tempi mediamente più elevati
 
 **Come stabilire la durata del quanto `q`**
 Bisogna calibrare `q` in base ai percentili dei tempi di burst.
@@ -611,7 +627,7 @@ _es._
 - Q1 RR q=16ms
 - Q2 FCFS
 
-_Un processo che non termina in tempo in Q0 viene spostato in Q1 e poi in Q2_
+(_Un processo che non termina in tempo in Q0 viene spostato in Q1 e poi in Q2_)
 
 ### Processi e Applicazioni
 
@@ -798,7 +814,7 @@ I semafori sono semplici e a basso livello. Esistono altre soluzioni ad alto liv
 
 Attraverso il **grafo di allocazione delle risorse**
 
-**Strategie per impedire i deadlock**
+**Strategie per impedire i deadlock**:
 
 - Impedire che si verifichi almeno una delle condizioni
 - Rilevare il deadlock e gestirlo (DBMS)
@@ -816,7 +832,7 @@ Attraverso:
 - numero di istanze disponibili per ogni risorsa
 - numero di istanze allocate ad ogni processo
 
-_Vedi algoritmo del banchiere_
+(_Vedi algoritmo del banchiere_)
 
 # Gestione della Memoria
 
@@ -851,7 +867,7 @@ La memoria viene suddivisa in partizioni di dimensioni predefinite.
 3. In caso non ci sia posto si mette in coda
 4. Assegnazione e setup della MMU
 
-**Svantaggi**
+**Svantaggi**:
 
 - Limite del numero di partizioni
 - Frammentazione interna
@@ -863,7 +879,7 @@ La memoria viene suddivisa in partizioni di dimensioni predefinite.
 
 La memoria non è suddivisa a priori. Si organizza un sistema a **buche**. Un nuovo processo sceglie una buca che riesca a contenerlo.
 
-**Tecniche di scelta della buca**
+**Tecniche di scelta della buca**:
 
 - **best-fit**: buca più piccola possibile
 - **first-fit**: la prima buca che trova
@@ -881,7 +897,7 @@ Uno degli svantaggi delle partizioni variabili è quello di scorrere le buche pe
 ## Paginazione
 
 È una tecnica molto diffusa per eliminare la frammentazione esterna ed evitare uno spazio dall'essere contiguo.
-La memoria fisica è suddivisa in blocchi uguali chiamati **frame**. L'allocazione avviene arrotondando per eccesso _dimensioneprocesso_/_dimensioneframe_. Gli indirizzi dei frame vengono gestiti dalla **page table**. La CPU vede i frame come pagine numerate da 0.
+La memoria fisica è suddivisa in blocchi uguali chiamati **frame**. L'allocazione avviene arrotondando per eccesso _dimensione-processo_/_dimensione-frame_. Gli indirizzi dei frame vengono gestiti dalla **page table**. La CPU vede i frame come pagine numerate da 0.
 
 1. Un processo che richiede molta memoria rende la page table enorme.
    - La tabella viene tenuta in memoria. Nella MMU viene creato un registro (**Page Table Base Register**) che fa riferimento al frame contenente la tabella.
@@ -913,19 +929,19 @@ Più semplice da gestire ma attenzione ai tempi di ricerca per una riga (si usa 
 
 Cerca di mantenere la corrispondenza fra l'allocazione di memoria e la visuale che l'applicazione ha della stessa. (funzioni, variabili, stack, ...)
 
-**Vantaggi**
+**Vantaggi**:
 
 - Consistenza fra vista utente e struttura fisica di memoria
 - Protezione/Condivisione
 
-**Svantaggi**
+**Svantaggi**:
 
 - Necessari algoritmi di allocazione dinamica
 - Frammentazione esterna
 
 ## Memoria virtuale
 
-_(Idea della paginazione)_
+(_Idea della paginazione_)
 
 Lo spazio degli indirizzi logici può essere più grande degli indirizzi fisici (RAM), all'occorrenza si scambiano (**swap**) pagine fra memoria e disco.
 
@@ -944,7 +960,7 @@ Se non ci sono frame liberi in memoria è necessario sostituirne uno. La scelta 
 
 _Bit Dirty_ indica che il frame non è stato scritto. Preferibile per la sovrascrittura.
 
-**Tecniche**
+**Tecniche**:
 
 - **FIFO** rimuove la pagina presente da più tempo
   - **Anomalia di Bélàdy** un algoritmo FIFO potrebbe generare più page fault quando ha a disposizione più frame
@@ -961,12 +977,12 @@ _Bit Dirty_ indica che il frame non è stato scritto. Preferibile per la sovrasc
 
 Posso pre-allocare più frame a un processo. L''allocazione può essere **fissa** o **variabile** e il rimpiazzamento **locale** o **globale**
 
-**Allocazione fissa**
+**Allocazione fissa**:
 
 (m = frame; n = processi) Si dividono i frame in parti uguali: $m/n$ frame per ogni processo
-Il processo P riceve $ms_i/totaledimensione$
+Il processo P riceve $ms_i/totale-dimensione$
 
-**Allocazione variabile**
+**Allocazione variabile**:
 
 **Working Set Size**: concetto di _località_ di un processo. In un certo periodo di tempo gli accessi in memoria si localizzano su poche pagine alla volta. La **working set size** è la dimensione del suo working set ( [$WS_i$] insieme delle pagine visitate dal processo P in un certo intervallo di tempo)
 
@@ -983,3 +999,147 @@ di conseguenza:
 4. Tutto rallenta
 
 **Controllo della frequenza dei page fault**: una soluzione può essere avere due soglie, una superiore inaccettabile che alloca al processo più frame e una inferiore che indica che un processo ha più frame del necessario.
+
+# File System e Memorie di Massa
+
+Il file system serve ad organizzare dati e programmi in strutture persistenti.
+
+## Interfaccia del File System
+
+### File
+
+Un insieme contiguo di dati identificati da un nome.
+
+- **Attributi**: nome, tipo, dimensione, protezione, timestamps
+- **Operazioni**: apertura, chiusura, scrittura, lettura, riposizionamento, troncamento(attributi mantenuti,,contenuto eliminato)
+- **Metodi di accesso**: diversi casi
+  - readOnly, writeOnly, readWrite
+  - sequenziale o casuale
+- **Strutture dati**
+  - tabella di sistema -> attributi, posizione disco, numero riferimenti
+  - tabella per processo -> posizione di lettura/scrittura
+
+### Directory
+
+Una collezione di nodi contenente informazioni su altri file.
+
+- **Attributi**: nome, tipo, dimensione, protezione, timestamps
+- **Operazioni**: aggiunta/rimozione/modifica/elenco/ricerca file
+- **Struttura delle directory**
+  - Piatta - MS-DOS
+  - Struttura ad albero - Windows
+  - Grafo - UNIX (possibili hard-link)
+- **Uso di diversi Filesystem**
+  - ogni volume ha il suo file system, per essere utilizzato va _montato_
+- **Protezione**
+  - liste di accesso
+  - classi di utenti: proprietario, gruppo, altri
+
+![Albero Aciclico](images/AlberoAciclico.png)
+
+## Realizzazione
+
+Solitamente a strati.
+
+1. Dispositivo fisico
+   1. lavora a blocchi (_cluster_ 4KB)
+2. Controllore I/O
+   1. organizza trasferimenti
+   2. genera interrupt
+3. Filesystem di Base
+   1. astrae il livello a blocchi
+4. Modulo di organizzazione file
+   1. posizione di un file logico nel blocco
+5. Filesystem Logico
+   1. organizza in directory e file
+6. Processi
+
+### Strutture dati
+
+necessarie all'organizzazione del disco
+
+#### Disco
+
+- `boot` carica il SO
+- `controllo delle partizioni` identifica i volumi logici in cui il dispositivo fisico è suddiviso
+- `altre strutture`
+
+#### Memoria
+
+- tabella delle partizioni montate
+- directory più frequenti
+- tabelle di file aperti
+
+### Allocazione dello spazio su disco
+
+Più complicata dell'allocazione in RAM perché i file qui possono crescere rendendo meno efficienti strategie come la best fit.
+
+#### Allocazione contigua
+
+ogni file occupa uno spazio contiguo su disco
+
+- ✅ la directory contiene solo il blocco di inizio e la lunghezza
+- ❌ frammentazione esterna, necessari compattamenti o spostamenti
+
+#### Allocazione a lista
+
+organizzate in liste concatenate, con puntatori a blocchi successivi
+
+- ✅ semplice creazione di un file, nessuna frammentazione esterna
+- ❌ accesso casuale impossibile, scarsa affidabilità
+
+#### File Allocation Table
+
+variante della allocazione a lista, la partizione contiene una tabella (FAT) di indici interi, uno per blocco. Contiene indici dei blocchi successivi e blocchi liberi. Essendo caricata in memoria è possibile l'accesso casuale.
+
+#### Allocazione indicizzata
+
+ogni file ha un blocco indice che contiene una tabella dei blocchi fisici che lo costituiscono. _i_-riga = _i_-blocco. La directory contiene l'indirizzo del blocco indice.
+
+- ✅ accesso casuale efficiente, no frammentazione esterna
+- ❌ overhead di occupazione
+  - possibile nesting di tabelle a più livelli (3 lvl = 4TB di file)
+
+#### _inode_ in UNIX
+
+Alcuni blocchi detti _inode_ sono raccolti in una tabella predefinita. Ogni nodo ha 10-12 blocchi di accesso veloce entre le altre posizioni puntano a un altro blocco con 128 indirizzi divisi allo stesso modo
+
+![inode](images/Inode.png)
+
+### Realizzazione delle directory
+
+Sono file speciali che ii SO interpreta come elenco di nodi. Può essere lineare o una tabella hash.
+
+### Gestione dello spazio
+
+- **Vettore di bit**
+- **Lista concatenata**
+- **Raggruppamento**
+
+## Efficienza e Prestazioni
+
+Il settore p la più piccola quantità leggibile e scrivibile dal disco (512B - 4KB).
+Il tempo di acceso è suddiviso in:
+
+- tempo di ricerca ➡️ posizionamento testina ⏲️ 200us - 1ms
+- tempo di latenza ➡️ tempo medio perché il settori passi sotto la testina ⏲️ (a 7200rpm) 4ms
+- tempo di trasferimento ➡️ 🔀 300MB/s
+
+Il _seek time_ è quello che impatta di più.
+
+### La cache del disco
+
+Il disco ha una sua cache con i blocchi a cui si accede più di frequente.
+
+**Problematiche** sono la dimensione, le politiche di rimpiazzamento, funzionamento in modalità _buffer_ (write-back, write-through)
+
+**I filesystem journaled** (es. Ext4 Linux) hanno un log che salva ogni operazione. Esse vi rimangono finché non sono state salvate nel loro blocco di competenza. In caso di crash le operazioni presenti sul log sono quelle non fatte.
+
+### Scheduling nel disco
+
+- **First Come First Served**
+  - in base all'arrivo dell'operazione. Poco efficiente.
+- **Shorted Seek Time First**
+  - viene ricalcolato il più vicino alla posizione della testina. ❌ rischio starvation
+- **Algoritmo SCAN**
+  - come SSTF ma viene salvata la direzione. Essa continua a scorrere tutte le tracce e poi torna indietro.
