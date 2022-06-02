@@ -46,6 +46,20 @@
         - [Scrittura](#scrittura)
       - [associative](#associative)
       - [set-associative](#set-associative)
+  - [I/O](#io)
+    - [Bus](#bus)
+      - [Sincrono](#sincrono)
+      - [Asincrono](#asincrono)
+    - [Requisiti per la comunicazione](#requisiti-per-la-comunicazione)
+    - [Trasmissione e Ricezione dei dati](#trasmissione-e-ricezione-dei-dati)
+      - [Polling](#polling)
+      - [Interrupt Driven I/O](#interrupt-driven-io)
+    - [Eccezioni](#eccezioni)
+      - [Interrupts](#interrupts)
+      - [Traps (Eccezioni)](#traps-eccezioni)
+      - [Environment Call/Break](#environment-callbreak)
+      - [Salti](#salti)
+      - [Gestione delle Eccezioni](#gestione-delle-eccezioni)
 
 ---
 
@@ -306,6 +320,146 @@ _es._
 
 La set associativa porta un altro **svantaggio**: che blocco in cache sostituirlo quando è piena. Diverse politiche come FIFO o LRU (Least Recently Used) possono risolvere questo problema.
 
-_continua..._
+## I/O
 
-(parte mancante I/O)
+Un calcolatore comunica attraverso dispositivi di Input/Output. Questi dispositivi devono essere espandibili ed eterogenei. Hanno diverse priorità in base all'uso, come latenza o throughput.
+
+I dispositivi sono collegati al processore tramite **bus**.
+Caratteristiche dei dispositivi sono:
+
+- Comportamento: R/W
+- Partner: uomo/macchina
+- Velocità di trasferimento
+
+CPU/Memoria e altri dispositivi hanno due bus separati.
+
+### Bus
+
+#### Sincrono
+
+Quando le comunicazioni avvengono secondo un protocollo collegato al ciclo di clock. È semplice da implementare, molto veloce ma poco robusto ai _drift_ e tutte le periferiche dovrebbero seguire tutte la stessa velocità.
+
+#### Asincrono
+
+Non si ha più un clock comune ma le transazioni sono governate da un _handshake_. È una soluzione più robusta e permette diversità, ma è più lento e complesso. Spesso vengono usate tecnologie ibride (PCI-E, USB, Serial).
+
+### Requisiti per la comunicazione
+
+- Rendere possibile al SO di inviare comandi alle
+  periferiche
+- Rendere possibile ai dispositivi notificare la
+  corretta esecuzione di un’operazione
+- Consentire trasferimenti diretti di dati tra
+  dispositivo e memoria
+
+Per impartire comandi ai dispositivi si forniscono delle **parole** di controllo, o scrivendo/leggendo specifiche posizioni in memoria, o tramite istruzioni speciali.
+
+### Trasmissione e Ricezione dei dati
+
+#### Polling
+
+O attesa attiva, si manda un comando alla periferica e si fa un ciclo di attesa testando il bit di stato.
+
+---
+
+> - Frequenza processore = 500 MHz
+> - Costo operazione Polling = 400 cicli di clock
+
+🟧 Esempio 1. Mouse
+
+è necessario acquisire il dato 30 volte al secondo
+
+$30 \cdot 400 = 12.000 \space clock/s$
+
+$12.000/500.000.000 = 0,002\%$
+
+> l'overhead è costante ma trascurabile
+
+🟧 Esempio 2. HardDisk
+
+trasferimento 16byte a 8 MB/s
+
+$\frac{8MB/s}{16B} = 500.000 \space polls/s$
+
+$500.000 \cdot 400 = 200.000.000 \space clock/s$
+
+$\frac{200.000.000}{500.000.000} = 40\% \space CPU_{usage}$
+
+> overhead inaccettabile perché pagato sempre
+
+---
+
+L'esempio mostra come il polling non possa essere usato in ogni situazione, in quanto il processore dedica cicli macchina a letture inutili.
+
+#### Interrupt Driven I/O
+
+Un interruzione è un segnale che segnala al processore che la periferica è pronta a eseguire il trasferimento richiesto. Hanno un grado di urgenza e sono asincrone.
+
+Questo permette di non interrompere l'esecuzione del programma ma i dispositivi devono sapere generare un interrupt e deve essere presente un **Interrupt Service Routine** per gestirlo.
+
+1. interrupt
+2. salvataggio PC
+3. salto al ISR
+4. risoluzione interrupt
+5. ritorno al codice utente
+
+Con questo metodo l'overhead è pagato solo quando le richieste sono effettivamente generate.
+
+🟧 HardDisk
+
+> supponendo che sia attivo solo il 5% del tempo con un costo di 500 cicli di clock
+
+$500.000 \cdot 500 = 250.000.000 \space clock/s$
+
+$\frac{250.000.000}{500.000.000} = 50\% \space CPU_{usage}$
+
+Ma la spesa del processore è:
+
+$5\% \cdot 50\% = 2,5\%$
+
+### Eccezioni
+
+Un'eccezione è un trasferimento del controllo del programma non programmato. Ne esistono di 3 tipi:
+
+#### Interrupts
+
+- causate da eventi esterni
+- asincrone
+- sospendono, risolvono, ricominciano
+
+#### Traps (Eccezioni)
+
+- causate da eventi interni (overflow, errori, fault)
+- sincrone
+- gestite da trap handler
+- _retry_ o _abort_ sono le soluzioni
+
+#### Environment Call/Break
+
+- **Call**: è una esplicita richiesta di un servizio di sistema `ecall`
+- **Break**: è un'esplicita chiamata per diagnostica e debug
+
+#### Salti
+
+Posso avere un **salto diretto** (no accesso in memoria ma occorre analizzare la causa) o avere un **vettore di interruzione** (conosco la causa e devo prelevare in memoria la routine di gestione)
+
+#### Gestione delle Eccezioni
+
+In RISC-V esistono registri speciali (che si trovano nel Control Status Register del processore):
+
+- `SEPC` istruzione che ha generato l'istruzione
+- `SSTATUS` bit di abilitazione globale degli interrupt
+  - Distingue Supervisor e User mode (tenendo traccia anche del livello dell'istruzione precedente)
+- `SCAUSE` causa dell'interruzione
+
+{_salto tutta la parte dei parametri degli interrupt [da pagina 19](https://didatticaonline.unitn.it/dol/pluginfile.php/1572757/mod_resource/content/1/lect24%20%5BAutosaved%5D.pdf)_}
+
+**Procedura**:
+
+1. rilevo un istruzione non valida o un malfunzionamento hardware
+2. salvo l'indirizzo dell'istruzione che l'ha generata in `SEPC`
+3. salvo la causa in `SCAUSE`
+4. trasferisco il controllo al SO che gestisce l'eccezione
+5. terminata la gestione torno all'esecuzione precedente.
+
+Per evitare che l'istruzione che ha generato l'eccezione si interrompa a metà causando stati non prevedibili, si preferisce lasciarla finire prima di gestire l'eccezione.
