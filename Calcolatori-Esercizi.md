@@ -39,7 +39,7 @@ $Address = 0x1F164$
 1. Calcolo il numero di blocchi
    $\frac{4096}{16} = 256 _{blocchi}$
 2. Converto l'indirizzo in decimale
-   $0x1F164 \rArr 127332$
+   $0x1F164  \rArr  127332$
 3. Calcolo l'indirizzo del blocco
    $\frac{127332}{16} = 7958,25 = 7958$
 4. Calcolo il numero del blocco

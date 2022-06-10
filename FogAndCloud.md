@@ -67,9 +67,34 @@
     - [Software Bridges in Linux](#software-bridges-in-linux)
     - [Complexity on a Single Server](#complexity-on-a-single-server)
     - [Datacenters-wide Networking](#datacenters-wide-networking)
-      - [L3 connecctivity](#l3-connecctivity)
+      - [L2 connectivity](#l2-connectivity)
       - [L3 connectivity](#l3-connectivity)
       - [Conclusions](#conclusions)
+  - [Cloud Storage](#cloud-storage)
+    - [Storage in the cloud](#storage-in-the-cloud)
+    - [Type of Storage](#type-of-storage)
+    - [Block storage (OpenStack Cinder)](#block-storage-openstack-cinder)
+    - [Distributed File Systems](#distributed-file-systems)
+      - [Unix](#unix)
+      - [Network File System](#network-file-system)
+      - [Design choices](#design-choices)
+    - [General Parallel File System (GPFS)](#general-parallel-file-system-gpfs)
+    - [Google File System (GFS)](#google-file-system-gfs)
+    - [Locks and Consensus](#locks-and-consensus)
+      - [Chubby (by Google)](#chubby-by-google)
+    - [Distributed Databases](#distributed-databases)
+      - [Big Table (Google)](#big-table-google)
+        - [Splitting and Merging](#splitting-and-merging)
+  - [Resource Allocation](#resource-allocation)
+    - [P vs NP problem](#p-vs-np-problem)
+    - [Approximation](#approximation)
+    - [Resource Allocation in Cloud](#resource-allocation-in-cloud)
+    - [Resource Allocation in the Fog](#resource-allocation-in-the-fog)
+    - [Wrap Up](#wrap-up)
+  - [Cloud Automation](#cloud-automation)
+    - [FaaS](#faas)
+    - [Infrastructure as a Code](#infrastructure-as-a-code)
+    - [Costs](#costs)
 
 ---
 
@@ -332,10 +357,9 @@ Virtualization uses **ring de-privileging**, which runs al guest software at pri
 
 > CPU traps to an interrupt handler vector in OS, CPU then switch to kernel mode and execute OS instructions.
 
-**Trap & Emulate paradigm**
+**Trap & Emulate paradigm**:
 
 > Guest OS is executed in an unprivileged mode, the trap is than intercepted by the VMM which emulates the effect of the privileged instruction.
-
 > _trap origin_ -> _handler_
 >
 > application -> guest OS
@@ -345,15 +369,15 @@ Virtualization uses **ring de-privileging**, which runs al guest software at pri
 - System Calls:
   - CPU traps
   - VMM jump to the guest OS
-  - ![](images/SysCall.png)
+  - ![SysCall](images/SysCall.png)
 - Privileged Instructions:
   - Trap to be emulated by VMM
   - VMM jump to the guest OS
-  - ![](images/PrivilegedInstruction.png)
+  - ![Privileged](images/PrivilegedInstruction.png)
 - Hardware Interrupts:
   - Trap to be handled by VMM
   - VMM jump to the guest OS
-  - ![](images/HardwareAssistedVirtualization.png)
+  - ![HW](images/HWInterrupt.png)
 
 **Conclusions (x86)**:
 
@@ -721,7 +745,7 @@ Three main types of software switches:
 
 Problems are the same.
 
-#### L3 connecctivity
+#### L2 connectivity
 
 To provide L2 access to tenants, **tunnels** are used (GRE protocol). They want their VMs like connected by a switch, even if in different racks.
 
