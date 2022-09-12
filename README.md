@@ -1,5 +1,6 @@
 # Riassunti
 
+- [Fondamenti di Robotica](FondamentiDiRobotica.md)
 - [Sistemi Operativi](SistemiOperativi.md)
 - **Calcolatori**
   - [Calcolatori (Assembly)](Calcolatori-Assembly.md)
