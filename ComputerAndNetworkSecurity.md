@@ -50,7 +50,36 @@
       - [Asymmetric Key Cryptography](#asymmetric-key-cryptography)
         - [RSA - Rivest-Shamir-Adleman](#rsa---rivest-shamir-adleman)
         - [DH - Diffie-Hellman](#dh---diffie-hellman)
+- [Applications of Cryptography](#applications-of-cryptography)
+  - [Remarks on PKC](#remarks-on-pkc)
+  - [Public Key Infrastructure](#public-key-infrastructure)
+    - [Digital Certificates](#digital-certificates)
+  - [SSL/TLS](#ssltls)
+    - [TLS in Client-Server Communication](#tls-in-client-server-communication)
+    - [TLS Handshake Protocol](#tls-handshake-protocol)
+    - [TLS for Authentication](#tls-for-authentication)
+    - [TLS for Confidentiality](#tls-for-confidentiality)
+    - [TLS for Integrity](#tls-for-integrity)
+    - [TLS Vulnerablilities](#tls-vulnerablilities)
+    - [Notes on TLS 1.3](#notes-on-tls-13)
 - [Authentication II](#authentication-ii)
+  - [Single Sign-On](#single-sign-on)
+  - [SAML](#saml)
+    - [SAML Assertions](#saml-assertions)
+    - [SAML Protocol](#saml-protocol)
+    - [SAML Bindings](#saml-bindings)
+    - [SAML Profiles](#saml-profiles)
+      - [Web Browser SSO Profile](#web-browser-sso-profile)
+    - [Authentication Context](#authentication-context)
+    - [Metadata](#metadata)
+    - [Security Considerations](#security-considerations)
+  - [National Identity Infrastructures](#national-identity-infrastructures)
+    - [SPID (Sistema Pubblico di Identità Digitale)](#spid-sistema-pubblico-di-identità-digitale)
+    - [CIE 3.0 (Carta d'Identità Elettronica)](#cie-30-carta-didentità-elettronica)
+      - [Capabilities](#capabilities)
+  - [European Identity Infrastructure](#european-identity-infrastructure)
+    - [eIDAS (Electronic Identification and Trust Services for Electronic Transactions in the European Union)](#eidas-electronic-identification-and-trust-services-for-electronic-transactions-in-the-european-union)
+- [Access Control](#access-control)
 
 # Basics
 
@@ -493,4 +522,327 @@ This is based on the fact that its easy to compute exponents, but hard to comput
 
 Security of DH depends on the difficulty of the Discrete Logarithm Problem. DH is a key agreement protocol, which means that it is used to agree on a shared secret key and it does not provide authentication.
 
+# Applications of Cryptography
+
+## Remarks on PKC
+
+**pros**:
+
+- private key is never transmitted
+- confidentiality
+- non-repudiation
+
+**cons**:
+
+- slow
+- how to distribute the public key?
+- problems of identity in authentication
+
+To mitigate the cons, **Digital Signatures** are used.
+
+> For example it is important to protect OTA updates, because if the update is not signed, the attacker could modify the update and install a malicious version.
+
+## Public Key Infrastructure
+
+To work the main requirement of the Public Key Infrastructure is that the public key must be associated with the identity of the user who is controlling the private key. A second requirement is that parties can assure that binding is still valid.
+
+The initial proposal were bulletin boards where puclic keys were listed. However this required trust in the provider of the bulletin board. Another solution (implemented for IoT) is to hardcore the public key in teh software.
+
+> CVE-321: use of hardcoded keys
+
+The most adopted solution are **digital certificates**.
+
+### Digital Certificates
+
+A digital certificate is a file that contains the public key of a user, and is signed by a trusted authority (called **Trusted Third Party** or **Certificate Authority**). The certificate is used to authenticate the user.
+
+The certificate contains:
+
+- Issuer: the name of the CA
+- Subject: the name of the user
+- Subject Public Key Info: the public key of the user
+- Issuer Digital Signature: the signature of the CA
+
+> The sandard for digital certificates is X.509
+
+PKI is composed of:
+
+- **Certificate Authority**: the trusted third party that issues the certificates
+- **Registration Authority**: assure valid and correct registration of the user
+- **Validation Authority**: provides an entity information
+- **Distribution System**
+  - repository of certificates LDAP
+  - Certificate Revocation List (CRL)
+
+**How to obtain a certificate**
+
+1. the user generates a key pair
+2. user sends a certificate request to the CA
+3. CA responds with his public key digitally signed (so it can be veriffied the integrity)
+4. user gather all information
+5. user send a certificate request to the CA with his public key signed (**Client Signing Request**)
+6. CA gets the public key from the user and verifies the signature
+7. CA issues the certificate
+
+## SSL/TLS
+
+Secure Sockets Layer (SSL) is a protocol for secure communication over the Internet. It is based on PKC and digital certificates. Transport Layer Security (TLS) is the successor of SSL.
+
+SSL/TLS is used to guarantee:
+
+- communicaton with the exact website the user intended to connect to
+- content is not modified during transmission
+
+### TLS in Client-Server Communication
+
+TLS consist pf two protocols:
+
+- **Handshake Protocol**: used to establish a secure connection
+- **Record Protocol**: used to encrypt the data
+
+PKC is used in the handshake phase to negotiate the cipher suite, authenticate and establish keys used in the record protocol. Symmetric key cryptography is used in the record protocol to encrypt the data.
+
+Additionally TLS provide a Change Cipher Protocol and an Alert Protocol.
+
+### TLS Handshake Protocol
+
+1. Client sends a Client Hello message to the server (version, cipher suites)
+
+_cipher suites area et of algorithms that help secure a network connection that uses TLS. It is composed by a key exchange algorithm, a bulk encryption algorithm and a message authentication code_
+
+> TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256:
+>
+> - key exchange: ECDHE (Ephimeral Diffie Hellman), auth during handshake
+> - bulk encryption: AES_128_GCM, encrypt message stream
+> - message authentication: SHA256, authenticate message stream
+
+2. Server sends a Server Hello message to the client (version, cipher suite, session ID)
+3. Server sends a Certificate message to the client (certificate of the server); it also sets the premaster secret and might request a client certificate
+4. If the client is required to send a certificate, it sends a Certificate message to the server; it also sets the premaster secret, and verifies the server certificate
+5. Each of the two parties sends a Change Cipher Spec message (single byte = 1) and a finished message (hash of the handshake messages)
+6. From now on, the communication is encrypted using the shared key
+
+_more on_ [Cloudflare about TLS](https://www.cloudflare.com/learning/ssl/what-happens-in-a-tls-handshake/)
+
+### TLS for Authentication
+
+- **server**: client encrypt data with public key of the server, so only the server can decrypt it
+- **client**: server decrypt data with public key of the client, so it knows that the client is the one who sent the data
+
+### TLS for Confidentiality
+
+All messages are encrypted with the algorithm and the key negotiated during the handshake.
+
+### TLS for Integrity
+
+Given by the MAC (Message Authentication Code) negotiated during the handshake. MAC are similar to hash functions, but they use the same key both for encryption and decryption.
+
+### TLS Vulnerablilities
+
+There are a few vulnerabilities in TLS:
+
+- Backward compatibility
+- Logical flaws
+- Implementation issues
+
+**Nonces**: a nonce is a random number that is used only once. It is used to prevent replay attacks. It is the base of the challenge-response authentication.
+
+> The server sends a nonce to the client, the client encrypts it with the private key and sends it back to the server. The server decrypts it with the public key and checks if the nonce is the same.
+
+**Vulnerabilities Examples**:
+
+- RC4NOMORE: based of decryption of cookies
+- POODLE: MiM makes the client use a less secure cipher suite (SSLv3)
+- BLEICHENBACHER: MiM can recover the premaster secret
+- HEARTBLEED: MiM can recover the memory of the server sending a crafted packet
+
+MORAL: deprecate RSA for key exchange
+
+### Notes on TLS 1.3
+
+- Remove unsafe features
+- More encryption
+- Increased performance (hello + key exchange in one message, use of pre-shared keys)
+- Backwards compatibility
+
 # Authentication II
+
+## Single Sign-On
+
+Single Sign-On means outsourcing authentication to trusted 3rd party **Identity Providers**. The user is authenticated once and then the user is granted access to multiple services.
+
+Basically:
+
+1. The user wants to access an application
+2. The service provider refer to the identity provider
+3. IdP ask for credentials
+4. User provide credentials to IdP
+5. IdP authenticate the user
+6. The service provider give the user an authentication token
+
+**Properties**:
+
+- credentials never leave the authentication domain (IdP + User Agent)
+- service providers have to trust the authentication domain
+- authentication transfer has to be secure
+
+## SAML
+
+SAML is a standard for exchanging authentication and authorization data between an identity provider and a service provider. SAML stands for Security Assertion Markup Language. It is heavily based on mechanism implemented in browsers (redirects, cookies, etc.). It is a XML-based protocol.
+
+The SAML distinguishes between two roles:
+
+- Identity Provider (IdP)
+- Service Provider (SP)
+
+A **Federation** is a group of entities sharing a policy and managed by a single entity; it estabilish the initial trust between resources.
+
+> An agreement between two or more parties to share information and resources like an airplane company and a hotel company.
+
+### SAML Assertions
+
+An assertion is a set of statements (claims) about a subject [ie. user].
+
+- **Authentication Assertion**: who issued the assertion, when it was issued, who is the subject, how the subject was authenticated
+
+  ```xml
+  <saml:Assertion>
+    <saml:Issuer>https://idp.example.com</saml:Issuer>
+    <saml:Subject>
+      <saml:NameID>
+      testid
+      </saml:NameID>
+    </saml:Subject>
+    <saml:Conditions
+      NotBefore="2010-01-01T00:00:00Z"
+      NotOnOrAfter="2010-01-01T00:00:00Z">
+    >
+      <saml:AudienceRestriction>
+        <saml:Audience>https://sp.example.com</saml:Audience>
+      </saml:AudienceRestriction>
+    </saml:Conditions>
+    <saml:AuthnStatement>
+      <saml:AuthnContext>
+        <saml:AuthnContextClassRef>
+          PasswordProtectedTransport
+        </saml:AuthnContextClassRef>
+      </saml:AuthnContext>
+    </saml:AuthnStatement>
+  </saml:Assertion>
+  ```
+
+  **:exclamation: SAML doesn't provide the authentication: the statement refers to a prior authentication**
+
+- **Attribute Assertion**: details about the subject
+
+  ```xml
+  <saml:AttributeStatement>
+    <saml:Attribute Name="email" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic">
+      <saml:AttributeValue>
+        test@test.com
+      </saml:AttributeValue>
+    </saml:Attribute>
+    <saml:Attribute Name="name" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic">
+      <saml:AttributeValue>
+        Test
+      </saml:AttributeValue>
+    </saml:Attribute>
+    <saml:Attribute Name="CreditLimit" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic">
+      <saml:AttributeValue>
+        1000
+      </saml:AttributeValue>
+    </saml:Attribute>
+  </saml:AttributeStatement>
+  ```
+
+- **Authorization Assertions**: what the subject is allowed to do
+
+### SAML Protocol
+
+///
+
+### SAML Bindings
+
+SAML defines a set of bindings to exchange assertions between the IdP and the SP. The binding defines how the assertion is sent and how it is signed.
+
+> **HTTP Redirect**: the assertion is sent as a query parameter in the URL. The assertion is signed using a query parameter. The assertion is encrypted using a query parameter.
+
+### SAML Profiles
+
+Are the composition of a set of bindings, protocols and assertions.
+
+#### Web Browser SSO Profile
+
+The user is redirected to the IdP, the IdP authenticates the user and redirects the user back to the SP with an assertion. The assertion is signed and encrypted. The assertion is sent using a POST request.
+
+There are two scenarios: already authenticated and not authenticated.
+
+![Web Browser SSO Profile - Auth](./images/ComputerAndNetworkSecurity/AuthSSO.jpg)
+![Web Browser SSO Profile - Not Auth](./images/ComputerAndNetworkSecurity/NotAuthSSO.jpg)
+
+### Authentication Context
+
+The authentication context is a set of attributes that describe the authentication process. It is used to define the level of assurance of the authentication.
+
+### Metadata
+
+- EntityID: the unique identifier of the entity
+- Cryptographic keys: public keys used to verify signatures
+- Protocol endpoints: the URL of the endpoints
+
+### Security Considerations
+
+The trust relationship between parties _should_ be established using a PKI.
+
+When integrity and confidentiality are required, TLS is reccomended. On delivery of the assertion, the assertion must be signed and encrypted.
+
+Processes should always check expiration dates. Assertion should contain a unique ID to prevent replay attacks. An application should only accept assertions that are intended for it.
+
+XML is vulnerable to XML attacks. (XXE)
+
+User has the control over his identity. Privacy is guaranteed by pseudonyms, one-time ids, auth context.
+
+## National Identity Infrastructures
+
+### SPID (Sistema Pubblico di Identità Digitale)
+
+SPID is the Italian national identity infrastructure. It is based on SAML 2.0 and is managed by AgID (Agenzia per l'Italia Digitale). It is based on the Web Browser SSO Profile.
+
+The SPID register, maintained by AgID, contains the metadata of the IdPs and the SPs:
+
+- SAML identifier
+- name
+- type (IdP or SP)
+- URL of the metadata
+- list of attributes
+
+### CIE 3.0 (Carta d'Identità Elettronica)
+
+CIE is the Italian national identity card. It is based on the Web Browser SSO Profile .It stores the following:
+
+- Name
+- Surname
+- Place and Date of Birth
+- Residency
+- Holder's photo
+- Two fingerprints
+- Different Validity Periods
+
+#### Capabilities
+
+- NFC
+- Cryptograhy
+
+## European Identity Infrastructure
+
+### eIDAS (Electronic Identification and Trust Services for Electronic Transactions in the European Union)
+
+eIDAS is the European identity infrastructure. It is based on SAML 2.0 and is managed by the European Commission. It is based on the Web Browser SSO Profile.
+
+Each EU country has to implement an eIDAS-node.
+
+A vulnerability in the eIDAS-node was discovered in 2018. The vulnerability allowed an attacker to impersonate an IdP and to issue assertions to any SP.
+
+An Digital Wallet is under discussion. It will be based on Decentralized Identifiers (DIDs) and Verifiable Credentials (VCs). Aa Framework (ESSIF) is under development.
+
+# Access Control
