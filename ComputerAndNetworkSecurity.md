@@ -80,6 +80,17 @@
   - [European Identity Infrastructure](#european-identity-infrastructure)
     - [eIDAS (Electronic Identification and Trust Services for Electronic Transactions in the European Union)](#eidas-electronic-identification-and-trust-services-for-electronic-transactions-in-the-european-union)
 - [Access Control](#access-control)
+  - [What is Access Control?](#what-is-access-control)
+  - [Access Control Models](#access-control-models)
+    - [OS Access Control Models](#os-access-control-models)
+      - [AC Matrix](#ac-matrix)
+      - [AC Lists](#ac-lists)
+      - [Capabilities](#capabilities-1)
+    - [Military Models](#military-models)
+      - [Multi-Level Security (Bell-LaPadula)](#multi-level-security-bell-lapadula)
+    - [Enterprise Models](#enterprise-models)
+      - [Role-Based Access Control (RBAC)](#role-based-access-control-rbac)
+      - [Attribute-Based Access Control (ABAC)](#attribute-based-access-control-abac)
 
 # Basics
 
@@ -846,3 +857,57 @@ A vulnerability in the eIDAS-node was discovered in 2018. The vulnerability allo
 An Digital Wallet is under discussion. It will be based on Decentralized Identifiers (DIDs) and Verifiable Credentials (VCs). Aa Framework (ESSIF) is under development.
 
 # Access Control
+
+## What is Access Control?
+
+Access control is the process of granting or denying access to resources. It is a fundamental security mechanism.
+
+Main parts of an access control system are:
+
+- Subjects (any entity including users, processes, devices, etc.)
+- Guard (Policy Decision Point)
+- Access Control Module
+
+> An Operating System is an example: OS has to manage resources, but it is multi-user and multi-tasking. OS has to manage access to resources (memory protection, file prottection). We can have different level of protection: no protection, isolation, share all or granular.
+
+**Principle of least Priviledge**: a subject should be granted only the minimum amount of privileges required to perform its tasks.
+
+Access Control is the process of mediating requests for access to resources and deciding whether to grant or deny the request. Protecting resources from unauthorized access id very dependent from the context.
+
+Security for a system is defined in terms of Policies. Policies are a set of rules to implement security properties.
+
+The structure out of this is:
+
+1. Policy - rules
+2. Model - mathematical representation of the system
+3. Enforcement - low-level implementation of the policy (SW/HW)
+
+The more policies are implemented, the more complex the system is. The more complex the system is, the more is subject to errors.
+
+## Access Control Models
+
+### OS Access Control Models
+
+#### AC Matrix
+
+![AC Matrix](./images/ComputerAndNetworkSecurity/ACMatrix.jpg)
+
+Easy to implement, but a lot of blank spaces.
+
+#### AC Lists
+
+For each file there is a list of subjects that can access it.
+
+#### Capabilities
+
+For each subject there is a list file that can access and with what permissions.
+
+### Military Models
+
+#### Multi-Level Security (Bell-LaPadula)
+
+### Enterprise Models
+
+#### Role-Based Access Control (RBAC)
+
+#### Attribute-Based Access Control (ABAC)
