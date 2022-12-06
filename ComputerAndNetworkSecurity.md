@@ -82,15 +82,23 @@
 - [Access Control](#access-control)
   - [What is Access Control?](#what-is-access-control)
   - [Access Control Models](#access-control-models)
-    - [OS Access Control Models](#os-access-control-models)
-      - [AC Matrix](#ac-matrix)
-      - [AC Lists](#ac-lists)
-      - [Capabilities](#capabilities-1)
-    - [Military Models](#military-models)
-      - [Multi-Level Security (Bell-LaPadula)](#multi-level-security-bell-lapadula)
-    - [Enterprise Models](#enterprise-models)
-      - [Role-Based Access Control (RBAC)](#role-based-access-control-rbac)
-      - [Attribute-Based Access Control (ABAC)](#attribute-based-access-control-abac)
+    - [AC Matrix](#ac-matrix)
+    - [AC Lists](#ac-lists)
+    - [Capabilities](#capabilities-1)
+      - [Protection in Operating Systems](#protection-in-operating-systems)
+    - [\[TODO\] Multi-Level Security (Bell-LaPadula)](#todo-multi-level-security-bell-lapadula)
+    - [Role-Based Access Control (RBAC)](#role-based-access-control-rbac)
+    - [Attribute-Based Access Control (ABAC)](#attribute-based-access-control-abac)
+      - [The ABAC Policy](#the-abac-policy)
+  - [XACML](#xacml)
+    - [XACML policy language](#xacml-policy-language)
+    - [XACML request/response protocol](#xacml-requestresponse-protocol)
+    - [\[TODO\] XACML reference architecture](#todo-xacml-reference-architecture)
+  - [OAuth 2.0](#oauth-20)
+    - [Flow](#flow)
+    - [Entities](#entities)
+    - [JSON Web Token (JWT)](#json-web-token-jwt)
+    - [OAuth 2.0 for Authentication (Bad)?](#oauth-20-for-authentication-bad)
 
 # Basics
 
@@ -886,28 +894,178 @@ The more policies are implemented, the more complex the system is. The more comp
 
 ## Access Control Models
 
-### OS Access Control Models
+- Mandatory Access Control (MAC)
+  - restrictive
+  - Multi-level Security
+- Discretionary Access Control (DAC) (ie. **groups**)
+  - flexible
+  - subject to trojans
 
-#### AC Matrix
+### AC Matrix
 
 ![AC Matrix](./images/ComputerAndNetworkSecurity/ACMatrix.jpg)
 
 Easy to implement, but a lot of blank spaces.
 
-#### AC Lists
+### AC Lists
 
 For each file there is a list of subjects that can access it.
 
-#### Capabilities
+### Capabilities
 
 For each subject there is a list file that can access and with what permissions.
 
-### Military Models
+#### Protection in Operating Systems
 
-#### Multi-Level Security (Bell-LaPadula)
+The goal is to prevent malious misuse of the system and ensure each resource is used only in accordance with system policies. So the concept is to ensure failures do the least amount of damage.
 
-### Enterprise Models
+> For example giving user access only to the file he owns.
 
-#### Role-Based Access Control (RBAC)
+???
 
-#### Attribute-Based Access Control (ABAC)
+**domain of protection**: the set of resources that are protected by the same access control mechanism. `<object, {access right set}>`
+
+> Capabilities are better than AC Lists because they are not subject to confusion attacks, were a non authourized subject can access a file by using an authorized subject. See the compiler example.
+
+**Confused Deputy**: a type of attack where a subject is able to do unauthorized actions by confusing another subject.
+
+### [TODO] Multi-Level Security (Bell-LaPadula)
+
+Multi-level security consist in a linearly ordered set of security levels. Each subject is assigned a security level. Each object is assigned a security level. Subjects can only access objects with a security level equal or lower than their own. They implement also an unordered set of "need-to-know" categories.
+
+> S = {Top Secret, Secret, Confidential, Unclassified}
+>
+> N = {Nuclear, Crypto}
+>
+> ie. (Secret, {Nuclear, Crypto}) or (Top Secret, {Nuclear})
+
+You assign the level on the creation of the resource. You then assign **clearance**
+
+> a user has C = {S, N}
+
+_No Read Up Property_: To read a resource user must have clearance >= resource level
+
+_No Write Down Property_: To write a resource user must have clearance exactly equal to resource level
+
+**Tranquillity Principle**: a subject can only access resources that are necessary to perform its tasks.
+
+### Role-Based Access Control (RBAC)
+
+RBAC is a model based on hyerarchical roles. Each role has a set of permissions. Each subject is assigned a role. Each subject can perform only the actions allowed by its role. They are usually expressed by **Hasse diagrams**.
+
+A **role** is a job function within the context of an organization, with some associated
+semantics regarding the authority and responsibility conferred on the subjects to
+whom the role is assigned [from ANSI RBAC Standard]. So rules are assigned to roles, not to users. The differ from groups, which are just collection of users, while roles are a collection of users and permissions.
+
+- **user-role assignement**: user has many roles, role has many users
+- **permission-role assignement**: permission hold by many roles, role has many permissions
+
+A user could have multiple roles and multiple **sessions** to enance the Principle of Least Priviledge.
+
+![RBAC](./images/ComputerAndNetworkSecurity/RBAC.png)
+
+In the **constrained RBAC** some limitations are introduced. **Separation of Duty is introduced** in which a user cannot have two contradictory permissions. **Session constraints** are introduced in which a user can have only one session at a time.
+
+### Attribute-Based Access Control (ABAC)
+
+DAC and MAC are great for small system, but they do not scale well. RBAC is great for large systems, but it is not flexible enough. ABAC is a compromise between the two.
+
+In ABAC, access rights are assigned to subjects based on their attributes. Attributes are properties of subjects. They can be:
+
+- **user attributes**
+- **attributes associated with the resource to be accessed**
+- **environmental conditions** (ie. time, location)
+
+> Allowing only users who are type=employees and have department=HR to access the
+> HR/Payroll system and only during business hours within the same time zone as the
+> company
+
+RBAC is coarse-grained, while ABAC is fine-grained.
+
+> - RBAC = Giving all teachers access to Google
+> - ABAC =Giving teachers access to Google if they are at School X and teach
+>   Grade Y
+
+#### The ABAC Policy
+
+A policy is a **set of rules** that govern allowable behavior within an organization,
+based on the privileges of subjects and **how** resources or objects are to be
+**protected under which environment conditions**.
+
+Typically written from the perspective of the object that needs protection and the
+privileges available to subjects.
+
+Privileges represent the authorized behavior of a subject and are defined by an
+authority and embodied in a policy.
+
+## XACML
+
+XACML stands for eXtensible Access Control Markup Language. It is an XML encoded language developed for a collaborative environment. It is **more than a policy specification language**.
+
+### XACML policy language
+
+It is for specifying access control policies and algorithms for combining them.
+
+![XACML](./images/ComputerAndNetworkSecurity/XACMLStructure.png)
+
+Each policy has a **Target**, which is a Boolean condition that tells the system if the rule needs to be meet.
+
+There are 12 algorithm in **rule combining** but main are:
+
+- Deny overrides
+- Permit overrides
+- First applicable
+- Only one applicable
+
+**Obligation** describes what must be carried out before or after an access request is approved and denied.
+
+### XACML request/response protocol
+
+It is the query system to evaluate user access to resources.
+
+XACML access request consists of attributes of subject, resource, action, and
+environment. Attributes are stored in a **Policy Information Point (PIP)** and retrieved at the time of decision making.
+
+> Role: "Doctor", ObjectAttr: "Medical Record"
+
+### [TODO] XACML reference architecture
+
+For deployment of software modules to house policies and attributes and compute and
+enforce access control decisions
+
+## OAuth 2.0
+
+This protocol is used to authorize access to resources. It is a **delegation protocol**. It is used to authorize access to resources without sharing credentials.
+
+> analogy: valet key for cars
+> You basically give a custom "token" to an external service which has to access some but not all of your personal resources.
+> ie. online printing service
+
+### Flow
+
+1. Authentication
+2. User Consent
+3. Get OAuth Token (_Bearer_, which contains access rights)
+4. Access Resource
+
+### Entities
+
+- Resource Owner
+- Protected Resource
+- Client (App or Service)
+- Authorization Server
+
+### JSON Web Token (JWT)
+
+It is the standard for OAuth2.0 Access Token. It is made by a **header**, a **payload** and a **signature**. Everything is encoded in base64.
+
+### OAuth 2.0 for Authentication (Bad)?
+
+The assumption that possession of a valid access token is enough to prove that a user
+is authenticated is true only in some cases (when the access token was freshly minted)
+
+There are other ways to obtain a valid access tokens than authenticating resource owner.
+
+> ie. using the refresh token
+
+Authentication is about the user and their presence with the application
