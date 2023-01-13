@@ -921,7 +921,7 @@ The goal is to prevent malious misuse of the system and ensure each resource is 
 
 > For example giving user access only to the file he owns.
 
-???
+<!-- TODO Compresi MAC e DAC -->
 
 **domain of protection**: the set of resources that are protected by the same access control mechanism. `<object, {access right set}>`
 
