@@ -24,6 +24,10 @@ Confidentiality is achieved by:
 
 - **Access Control**: The process of restricting access to a resource. This prevents unauthorized individuals from accessing the resource.
 
+<mark>ChatGPT</mark>:
+
+Confidentiality in the CIA triad refers to the protection of information from unauthorized access. It is achieved through the use of various security measures such as encryption, access controls, and data masking. Encryption is the process of converting plaintext into ciphertext, which is unreadable without a decryption key. Access controls are used to restrict access to sensitive information based on a person's identity and clearance level. Data masking is the process of obscuring sensitive data so that it is not visible to unauthorized individuals.
+
 ### Integrity
 
 Integrity means guarding against improper information modification or destruction, including information _non-repudation_ (individual falsely denying haveing performed a particular operation) and _authenticity_ (property can be verified and trusted).
@@ -40,6 +44,16 @@ It is and essential component for organizations whith certain regulations (ie. f
 
 > Violation of data integrity can lead to _loss of trust_ and _loss of business_. [ie. bots on social media]
 
+<mark>ChatGPT</mark>:
+
+Integrity, in the CIA triad, refers to the protection of information from unauthorized modification or destruction. It is achieved through the use of various security measures such as access controls, input validation, and data backup.
+
+Access controls are used to ensure that only authorized individuals can modify or delete sensitive information. Input validation is a process of checking the data entered by users to ensure that it is in the correct format and within acceptable limits. Data backup is the process of creating copies of important data and storing them in a secure location, in order to ensure that it can be recovered in case of loss or damage.
+
+Hashing is also commonly used to ensure the integrity of data, by creating a unique 'hash' or fingerprint of the data, that can be used to validate that the data has not been tampered with by comparing it to the original hash.
+
+Additionally, integrity can be ensured through the use of digital signatures and non-repudiation mechanisms, which are used to guarantee the authenticity of a message or transaction and prevent any party from denying its involvement in it.
+
 ### Availability
 
 Availability is the property that ensures information is accessible and usable upon request by an authorized entity. It also require the data to be protected from accidental interruption of access to the data.
@@ -54,17 +68,29 @@ Availability can be achieved by:
 
 Low availability can impact _economy_ and _fundamental rights_.
 
+<mark>ChatGPT</mark>:
+
+Availability, in the CIA triad, refers to the protection of information systems and the data they contain from disruption, whether intentional or accidental. It is achieved through various security measures such as redundancy, disaster recovery, and incident response.
+
+Redundancy refers to the duplication of critical components, such as servers and network connections, to ensure that the system remains operational even if one component fails. Disaster recovery plans are used to restore normal operations as quickly as possible after a disaster or interruption. Incident response is the process of identifying and responding to security incidents in a timely and effective manner, in order to minimize the impact on the availability of the system.
+
+Additionally, load balancing is also used to ensure availability by distributing the workload across multiple servers, in order to prevent any one server from becoming overwhelmed and causing a disruption in service.
+
+Availability is also closely related to business continuity, which is the ability of an organization to keep its operations running during and after a disruption. Ensuring the availability of IT systems and infrastructure is critical for maintaining business continuity.
+
 ## Security Policies and Mechanisms
 
-**Security Policies** are the rules that define the acceptable use of a system. They are usually written in a document and are enforced by the system administrators.
+**Security Policies** are the rules and guidelines that organizations put in place to ensure the protection of their information systems and data. They are usually written in a document and are enforced by the system administrators.
 
 **Security Mechanisms** are the technical solutions (usually rated) that implements the security policies. They are usually implemented by the system administrators.
 
 **Security Services** are the capabilities that supports one or more of the security requirements (ie. CIA).
 
+In short: services are like all building blocks to build a security mechanism, which is a procedure to implement policies.
+
 > Example: A company X can have a security policy that states that all employees must use a strong password. The security mechanism can be a password policy that requires a minimum of 8 characters, a mix of upper and lower case letters, numbers and special characters. The security service can be the password hashing algorithm. They might also have policies for visitors.
 
-Some examples of security mechanisms are:
+Some examples of security services are:
 
 - **Authentication**: The process of verifying the identity of a user.
 
@@ -72,11 +98,10 @@ Some examples of security mechanisms are:
 
 - **Access Control**: The process of restricting access to a resource.
 
-Some examples of security services are:
+Some examples of security mechanisms are:
 
-- **TLS protocol**: The protocol that provides privacy and data integrity between two communicating applications.
-
-- **Access Control Lists**: The process of restricting access to a resource based on the user's identity.
+- **Firewalls**
+- **Encryption**
 
 CIA Triad is also essential not only to achieve security but also understand security violations.
 
@@ -92,7 +117,7 @@ One way to mitigate security violations is **Zero Trust** which is a security mo
 
 **Attack** is the exploitation of a vulnerability through a malicious activity to gain unauthorized access or attempt to compromise a system CIA.
 
-[Cyber attacks try to readch as many victims as possible]
+[Cyber attacks try to reach as many victims as possible]
 
 **Risk** is the probability of a threat exploiting a vulnerability to cause harm to the system.
 
@@ -114,12 +139,12 @@ It is essential to understand that security is not only about technology, but al
 
 ## More
 
-- **Threat modellling is crucial**
+- Threat modellling is crucial
 
-- **Deploying security controls requires to consider several different aspects**
+- Deploying security controls requires to consider several different aspects
 
-- **Security and Trust assumptions are essential**
+- Security and Trust assumptions are essential
 
-- **Be careful with security control**
+- Be careful with security control
 
-- **Security violations can be traced back to the CIA triad**
+- Security violations can be traced back to the CIA triad

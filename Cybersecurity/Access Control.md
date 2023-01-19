@@ -92,7 +92,7 @@ There are four types of **combining rules** in XACML:
 
 3. **First-applicable**: The first policy or policy set that applies to the request is used to determine the result. If no policies or policy sets apply, the request is treated as "Not applicable."
 
-4. **Only-one-applicable**: If more than one policy or policy set applies to the request, the request is treated as "Indeterminate." If only one policy or policy set applies, the result of that policy or policy set is used to determine the result of the request. If no policies or policy sets apply, the request is treated as "Not applicable."**
+4. **Only-one-applicable**: If more than one policy or policy set applies to the request, the request is treated as "Indeterminate." If only one policy or policy set applies, the result of that policy or policy set is used to determine the result of the request. If no policies or policy sets apply, the request is treated as "Not applicable."
 
 An **obligation** is a specific action or requirement that must be carried out or satisfied in order to grant access to a resource. Obligations are often used to enforce additional security measures or to provide additional information or context when granting access to a resource.
 
@@ -134,7 +134,7 @@ OAuth 2.0 is a framework that defines a set of protocols and processes for autho
 
 ### Entities
 
-- Resource Owneren (Bearer, which contains access rights)
+- Resource Owner (Bearer, which contains access rights)
   
   Access Resource
 

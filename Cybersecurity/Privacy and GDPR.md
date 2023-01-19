@@ -2,7 +2,7 @@
 
 ## Definition
 
-Privacy can be defined as **Infromational self-determination**, wich means everyone gets to control information about himself. Control is on access, usage, purpose, data transfer...
+Privacy can be defined as **Informational self-determination**, which means everyone gets to control information about himself. Control is on access, usage, purpose, data transfer...
 
 Another definition of privacy is to increase difficulty in correlating data/actions to subjects.
 
@@ -66,7 +66,7 @@ SAML supports privacy (intended as correlation of actions) by using two types of
 
 ### Federation via Out-of-Band Account Linking
 
-With this method, the identinty of a user on the IP s hard linked to the Indentity on the SP an the association may be performed without SAML. Basically the IP pass in the `Response` information about the user. **No privacy is provided**, and it is thee standard way of performing identity federation.
+With this method, the Identity of a user on the IP is hard linked to the Indentity on the SP an the association may be performed without SAML. Basically the IP pass in the `Response` information about the user. **No privacy is provided**, and it is the standard way of performing identity federation.
 
 ### Federation via Persistent Pseudonym Identifiers
 
