@@ -37,7 +37,7 @@ Example of vulnerabilities are:
   
   - SQL Injection
   
-  - Cross-Site-Scripting
+  - Cross-Site-Scripting (XSS)
   
   - CSFR, Broken Auth, Unvalidated Input
 

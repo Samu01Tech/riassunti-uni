@@ -64,13 +64,11 @@ RBAC is a flexible and widely used method of access control, and is particularly
 
 Attribute-Based Access Control (ABAC) is a method of access control in which **access to resources is based on the attributes of the user, the resource, and the context in which the access is being requested**. ABAC allows for **fine-grained control** over access to resources, as it takes into account multiple attributes rather than just the identity of the user or the role that the user belongs to.
 
-In an ABAC system, access to resources is governed by a set of policies that specify the conditions under which access is granted. These policies may include attributes such as the user's identity, the user's role or job function, the time of day, the location of the user, and the type of device being used. The policies may also include attributes of the resource itself, such as the classification level or sensitivity of the resource, or the type of resource (e.g., file, database record, etc.).
+In an ABAC system, access to resources is governed by a set of policies that specify the conditions under which access is granted. These policies may include attributes such as the user's identity, the user's role or job function, the time of day, the location of the user, and the type of device being used. The **policies may also include attributes of the resource itself**, such as the *classification level* or *sensitivity* of the resource, or the type of resource (e.g., file, database record, etc.).
 
-ABAC systems typically include a policy server or database that stores the policies and an access control module that enforces the policies. When a user requests access to a resource, the access control module retrieves the relevant policies and evaluates them against the attributes of the user, the resource, and the context of the request. If the policies are satisfied, the access control module grants access to the resource.
+ABAC systems typically include a **policy server** or database that stores the policies and an access control module that enforces the policies. When a user requests access to a resource, the access control module retrieves the relevant policies and **evaluates them against the attributes of the user**, the resource, and the context of the request. If the policies are satisfied, the access control module grants access to the resource.
 
-ABAC is a highly flexible and powerful method of access control, as it allows for the creation of complex and fine-grained access control policies. It is used in a variety of contexts, including operating systems, network devices, and web applications.
-
----
+ABAC is a **highly flexible** and powerful method of access control, as it allows for the creation of complex and fine-grained access control policies. It is used in a variety of contexts, including operating systems, network devices, and web applications.
 
 ## XACML
 
@@ -94,7 +92,9 @@ There are four types of **combining rules** in XACML:
 
 4. **Only-one-applicable**: If more than one policy or policy set applies to the request, the request is treated as "Indeterminate." If only one policy or policy set applies, the result of that policy or policy set is used to determine the result of the request. If no policies or policy sets apply, the request is treated as "Not applicable."
 
-An **obligation** is a specific action or requirement that must be carried out or satisfied in order to grant access to a resource. Obligations are often used to enforce additional security measures or to provide additional information or context when granting access to a resource.
+An **obligation** is a specific action or requirement that must be carried out or satisfied in order to grant or deny access to a resource. Obligations are often used to enforce additional security measures or to provide additional information or context when granting access to a resource.
+
+These can be notify the user if something went wrong, log the access, ask for a human administrator in case of indeterminate state, lock out a user if has too many failed login attempts, ecc... 
 
 ### XACML Architecture
 
@@ -109,6 +109,22 @@ An **obligation** is a specific action or requirement that must be carried out o
 **Policy Administration Point**: It creates and store the policies.
 
 **Policy Information Point**: It collect the data required for policy evaluation (from the attributes)
+
+```mermaid
+sequenceDiagram
+    User->>+PEP: Ask for access
+    PEP->>+CtxHandler: I have a request
+    CtxHandler->>+PDP: What info is needed?
+    PDP->>+PAP: Give me the policies
+    PAP->>+PDP: Here you go
+    PDP->>+CtxHandler: I need these attributes
+    CtxHandler->>+PIP: Get me those attributes
+    PIP->>+CtxHandler: Here is subject, environment, and resource attributes
+    CtxHandler->>+PDP: Here you have the attributes
+    PDP->>+CtxHandler: Permit || Deny || Indetermainate
+    CtxHandler->>+PEP: This is the result
+    PEP->>+Obbligations Service: Let me see if there are some obbligations and then you can proceed
+```
 
 ## OAuth 2.0
 
@@ -135,8 +151,8 @@ OAuth 2.0 is a framework that defines a set of protocols and processes for autho
 ### Entities
 
 - Resource Owner (Bearer, which contains access rights)
-  
-  Access Resource
+
+- Access Resource
 
 - Protected Resource
 
