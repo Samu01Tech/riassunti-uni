@@ -29,7 +29,7 @@ Because cookies are exchanged in clear you should use https.
 
 ### Secure a Web Application
 
-Creating a secure Web application is not an easy task because many security flaws can happen at many levels (db, sevrer, app, network). Every layer must be examined.
+Creating a secure Web application is not an easy task because many security flaws can happen at many levels (db, server, app, network). Every layer must be examined.
 
 Example of vulnerabilities are:
 
@@ -45,7 +45,7 @@ Example of vulnerabilities are:
   
   - DoS
   
-  - OS Explitation
+  - OS Exploitation
 
 - Network Layer
   
@@ -65,7 +65,7 @@ Example of vulnerabilities are:
 
 A web application should be able to grant: **Authentication, Authorization, Confidentiality, Integrity, Non-Repudiation**.
 
-Goals of **Web Application Security** (a branch of Information Security) is to secure web and mobile apps and safen browsing the web
+Goals of **Web Application Security** (a branch of Information Security) is to secure web and mobile apps and safe browsing the web
 
 ### SQL Injection
 
@@ -86,7 +86,7 @@ Other types of SQL injection use wildcards, `... OR 1=1` always true statements.
 
 - Input sanitization
 
-- Principle of The Least Priviledge
+- Principle of The Least Privilege
 
 ### Cross-Site Scripting Attacks (XSS)
 
@@ -150,7 +150,7 @@ servers are so commonly exploited.*
 
 ### Conclusion
 
-It is a good idea to use automated soltions for analysis and enforcement of security policies (ie. tools, firewalls, Cloudflare).
+It is a good idea to use automated solutions for analysis and enforcement of security policies (ie. tools, firewalls, Cloudflare).
 
 **The OWASP Top 10** 
 
