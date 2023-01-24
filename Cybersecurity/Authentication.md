@@ -38,11 +38,11 @@ When logging in to a system, the user is usually asked to provide a username and
 
 Researchers focus on authentication process, practitioners aim to protect the user.
 
-To strenght the password, you can combine other techniques (ie. 2FA, biometrics).
+To strength the password, you can combine other techniques (ie. 2FA, biometrics).
 
 ### History
 
-In the past, password were used on mainframes to protect the abuse of resources. In the seveneties they were used to protect the access to personal computers; password were protected by **hashing** and **salting**. The Morris Worm was the first worm that exploited the use of weak passwords, exhausting resources. The **shadow files** which kept the password were only readable by root user, this being a form of _access control_.
+In the past, password were used on mainframes to protect the abuse of resources. In the seventies they were used to protect the access to personal computers; password were protected by **hashing** and **salting**. The Morris Worm was the first worm that exploited the use of weak passwords, exhausting resources. The **shadow files** which kept the password were only readable by root user, this being a form of _access control_.
 
 With the expansion of the World Wide Web passwords were replaced by certificates based on public key cryptography. Not a good solution for the final user. Client then started to use username and password while servers used certificates.
 
@@ -52,7 +52,7 @@ After, reset of forgotten password was automated. Problem nowadays is that users
 
 Attacks on passwords are:
 
-- **On-line**, which can bemitigated by reducing the number of attempts.
+- **On-line**, which can be mitigated by reducing the number of attempts.
 
 - **Off-line**, when the attacker steal the file containing the password. This can be mitigated by using a **hashing algorithm**.
 
@@ -92,9 +92,9 @@ cHashing is a one-way function that maps a string to a fixed-length value. It is
 
 - strong - check for integrity of data, recalculating the hashand comparing with the given one
 
-- weak - make difficult to generate an equal hash with a random imput
+- weak - make difficult to generate an equal hash with a random input
 
-changing even a single letter makes the hash change completly: this is called **avalanche effect**
+changing even a single letter makes the hash change completely: this is called **avalanche effect**
 
 > Example of hash function: MD5 (broken), SHA-256
 
@@ -124,7 +124,7 @@ Phishing tries to obtain sensitive information by impersonating as a trustworthy
 
 ### Multi-Factor Authentication
 
-It is a procedured based on _two or more_ factors to authenticate a user. It is a good idea to use 2FA, but it is important to use a strong second factor.
+It is a procedure based on _two or more_ factors to authenticate a user. It is a good idea to use 2FA, but it is important to use a strong second factor.
 
 Types of MFA are:
 
@@ -297,7 +297,7 @@ The authentication context is a set of attributes that describe how the user aut
 
 The trust relationship between parties _should_ be established using a PKI.
 
-When integrity and confidentiality are required, TLS is reccomended. On delivery of the assertion, the assertion must be signed and encrypted.
+When integrity and confidentiality are required, TLS is recommended. On delivery of the assertion, the assertion must be signed and encrypted.
 
 Processes should always check expiration dates. Assertion should contain a unique ID to prevent replay attacks. An application should only accept assertions that are intended for it.
 
