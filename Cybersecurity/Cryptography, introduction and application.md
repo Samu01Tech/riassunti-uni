@@ -68,21 +68,21 @@ No information should be lost.
 
 ### Substitution Cyphers
 
-A substitution cypher is a method of encrypting where each unit of data is replaced with cipher text, accroding to a fixed system.
+A substitution cypher is a method of encrypting where each unit of data is replaced with cipher text, according to a fixed system.
 
 #### Caesar Cipher
 
-In the caesar chipher each letter was substituted with another letter, which is a fixed number of positions down the alphabet. The key is the number of positions.
+In the caesar cipher each letter was substituted with another letter, which is a fixed number of positions down the alphabet. The key is the number of positions.
 
 ![](/home/samu/Documents/Markdown/images/ComputerAndNetworkSecurity/caesarCipher.png)
 
 **Mathematically**: $e(x) = (x + k) \mod 26$, $d(x) = (x - k) \mod 26$
 
-This method is easy to break through brute force or thinking about the frequency of letters in the language to allign the letters.
+This method is easy to break through brute force or thinking about the frequency of letters in the language to align the letters.
 
 #### Vigeneré Cipher
 
-In the vigeneré cipher a keyword is chosen, then the position of the plaintext's letter is summed with the position of the keyword's letter and you follow the caesar method. A key of size _l_ make up the keyspace ($l^{26}$) and it becomes more complex as you increase the lenght of the key.
+In the vigeneré cipher a keyword is chosen, then the position of the plaintext's letter is summed with the position of the keyword's letter and you follow the caesar method. A key of size _l_ make up the keyspace ($l^{26}$) and it becomes more complex as you increase the length of the key.
 
 ![](/home/samu/Documents/Markdown/images/ComputerAndNetworkSecurity/vigenereCipher.png)
 
@@ -108,11 +108,11 @@ In the columnar cipher the plaintext is written in a grid, of a fixed number of 
 
 Because of the quick development of the computer, it become easier to decrypt the ciphertext.
 
-New encryption technique, based on algoritms and bits, were introduced:
+New encryption technique, based on algorithms and bits, were introduced:
 
-- Symetric Key Cryptography
+- Symmetric Key Cryptography
 
-- Asymetric Key Cryptography
+- Asymmetric Key Cryptography
 
 #### Symmetric Key Cryptography
 
@@ -146,7 +146,7 @@ Also called Public Key Cryptography: it allows two parties to engage in a secure
 
 PKC is based on one-way functions (multiplication/factorization, exponentiation/logarithm).
 
-It is used foor two purposes:
+It is used for two purposes:
 
 - keep the plaintext secret and only visible to the recipient (**data confidentiality**)
 
@@ -160,11 +160,11 @@ RSA is an asymmetric key algorithm based on the factoring problem. It is based o
 
 A recent problem of RSA encryption is the generation of keys: the attacker could compute the private part of an RSA key, particularly if the key is a common 1024 or 2048 bits.
 
-RSA can be use for integrity: from the message a hash is generated and encrypted with the private key; the signature is sent with the message. The receiver can decrypt the hash and compare it with the hash of the message.
+RSA can be used for integrity: from the message a hash is generated and encrypted with the private key; the signature is sent with the message. The receiver can decrypt the hash and compare it with the hash of the message.
 
 ##### DH - Diffie-Hellman
 
-This is based on the fact that its easy to compute exponents, but hard to compute discrete logarithms.
+This is based on the fact that it's easy to compute exponents, but hard to compute discrete logarithms.
 
 ![DH algorithm representation](https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Diffie-Hellman_Key_Exchange.svg/250px-Diffie-Hellman_Key_Exchange.svg.png)
 
@@ -198,7 +198,7 @@ To mitigate the cons, **Digital Signatures** are used.
 
 To work the main requirement of the Public Key Infrastructure is that the public key must be associated with the identity of the user who is controlling the private key. A second requirement is that parties can assure that binding is still valid.
 
-The initial proposal were bulletin boards where puclic keys were listed. However this required trust in the provider of the bulletin board. Another solution (implemented for IoT) is to hardcore the public key in the software.
+The initial proposal were bulletin boards where public keys were listed. However this required trust in the provider of the bulletin board. Another solution (implemented for IoT) is to hardcore the public key in the software.
 
 > CVE-321: use of hardcoded keys
 
@@ -218,7 +218,7 @@ The certificate contains:
 
 - Issuer Digital Signature: the signature of the CA
 
-> The sandard for digital certificates is **X.509**
+> The standard for digital certificates is **X.509**
 
 PKI is composed of:
 
@@ -257,7 +257,7 @@ Secure Sockets Layer (SSL) is a protocol for secure communication over the Inter
 
 SSL/TLS is used to guarantee:
 
-- communicaton with the exact website the user intended to connect to
+- communication with the exact website the user intended to connect to
 
 - content is not modified during transmission
 
@@ -331,7 +331,7 @@ All messages are encrypted with the algorithm and the key negotiated during the 
 
 Given by the MAC (Message Authentication Code) negotiated during the handshake. MAC are similar to hash functions, but they use the same key both for encryption and decryption.
 
-### TLS Vulnerablilities
+### TLS Vulnerabilities
 
 There are a few vulnerabilities in TLS:
 
