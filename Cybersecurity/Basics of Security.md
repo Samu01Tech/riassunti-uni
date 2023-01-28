@@ -30,7 +30,7 @@ Confidentiality in the CIA triad refers to the protection of information from un
 
 ### Integrity
 
-Integrity means guarding against improper information modification or destruction, including information _non-repudation_ (individual falsely denying haveing performed a particular operation) and _authenticity_ (property can be verified and trusted).
+Integrity means guarding against improper information modification or destruction, including information _non-repudiation_ (individual falsely denying having performed a particular operation) and _authenticity_ (property can be verified and trusted).
 
 Integrity also means to have the ability to detect even the smallest change in the data.
 
@@ -58,7 +58,7 @@ Additionally, integrity can be ensured through the use of digital signatures and
 
 Availability is the property that ensures information is accessible and usable upon request by an authorized entity. It also require the data to be protected from accidental interruption of access to the data.
 
-Violation in availability is usually caused by an _infrastructire failure_ or a _DDoS attack_.
+Violation in availability is usually caused by an _infrastructure failure_ or a _DDoS attack_.
 
 Availability can be achieved by:
 
